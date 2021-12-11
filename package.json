@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/netlify/lambda serve src",
+    "build": "./node_modules/.bin/netlify/lambda serve src"
   },
   "author": "rexituz",
   "license": "ISC",
@@ -14,10 +16,12 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongoose": "^6.0.12",
+    "netlify-lambda": "^2.0.15",
     "path": "^0.12.7",
     "prettier": "^2.4.1",
     "querystring": "^0.2.1",
     "request": "^2.88.2",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "serverless-http": "^2.7.0"
   }
 }
