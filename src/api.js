@@ -9,7 +9,7 @@ const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.
 
 //Express Instance
 const app = express();
-app
+app 
 .use(express.static('public'))
 .use(cors())
 .use(cookieParser())
