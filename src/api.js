@@ -15,7 +15,7 @@ app
 .use(cookieParser())
 .use(express.json())
 .use(express.urlencoded({extended: true}))
-.use('/.netlify/functions/', router);
+.use('', router);
 
 //Database Connection and opening of Port
 mongoose
