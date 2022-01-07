@@ -3,19 +3,14 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const serverless = require('serverless-http')
-const router = require('./router/router.js');
+const router = require('./router.js');
 
 const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.net/EzPP?retryWrites=true&w=majority'
 
 //Express Instance
 const app = express();
-app 
-.use(express.static('public'))
-.use(cors())
-.use(cookieParser())
-.use(express.json())
-.use(express.urlencoded({extended: true}))
-.use('/.netlify/functions/', router);
+app.use(express.static('public'))
+app.use('/.netlify/functions/', router);
 
 //Database Connection and opening of Port
 mongoose
@@ -23,6 +18,10 @@ mongoose
 	.then((result) => {
 		console.log('Connected to Database');
 		app.listen(3000, () => console.log('Listen to 3000'));
+		app.use(cors())
+		app.use(cookieParser())
+		app.use(express.json())
+		app.use(express.urlencoded({extended: true}))
 	})
 	.catch((err) => {
 		console.log(err);

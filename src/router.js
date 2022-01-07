@@ -1,9 +1,9 @@
 const express = require('express');
-const randomString = require('../utils/randomString.js');
+const randomString = require('./utils/randomString.js');
 const querystring = require('querystring');
 const request = require('request')
 const path = require('path');
-const User = require('../modules/user.js');
+const User = require('./modules/user.js');
 const base64 = require('base-64');
 const { urlencoded } = require('express');
 
