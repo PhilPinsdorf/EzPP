@@ -1,3 +1,2 @@
 [build]
  functions = "functions"
- edge_handlers = "src/edge-handlers"
