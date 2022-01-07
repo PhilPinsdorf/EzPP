@@ -375,3 +375,4 @@ router.get('/api/v1/getenabled', (req, res) => {
 })
 
 module.exports = router;
+exports.handler = router;
