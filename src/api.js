@@ -66,7 +66,10 @@ router.get('/user', function (req, res) {
 //Routes to the api
 router.get('/api/v1/login', function(req, res) {
     var state = randomString.get(16);
-    res.cookie(stateKey, state);
+    res.cookie(stateKey, state, {
+        secure:true,
+        sameSite:'strict'
+    });
 
     var scope = 'user-read-private user-read-email';
     res.redirect('https://accounts.spotify.com/authorize?' +
