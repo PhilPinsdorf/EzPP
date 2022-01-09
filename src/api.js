@@ -3,7 +3,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const serverless = require('serverless-http')
-const express = require('express');
 const randomString = require('./utils/randomString.js');
 const querystring = require('querystring');
 const request = require('request')
