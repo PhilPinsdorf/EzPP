@@ -84,6 +84,8 @@ router.get('/api/v1/login_callback', function(req, res) {
 var code = req.query.code || null;
 var state = req.query.state || null;
 var storedState = req.cookies ? req.cookies[stateKey] : null;
+console.log(state)
+console.log(storedState)
 
 if (state === null || state !== storedState) {
     res.redirect('/#' +
