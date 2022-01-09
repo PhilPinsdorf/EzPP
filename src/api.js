@@ -40,7 +40,7 @@ router.get('/me', (req, res) => {
             }
 
             if(result) {
-                res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'))
+                res.status(200).sendFile(path.resolve('/frontend/me.html'))
             } else {
                 res.redirect('/login')
             }
