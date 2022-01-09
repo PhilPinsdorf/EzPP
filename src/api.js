@@ -40,7 +40,7 @@ router.get('/me', (req, res) => {
             }
 
             if(result) {
-                res.status(200).sendFile(path.resolve('/frontend/me.html'))
+                res.status(200).sendFile('frontend/me.html')
             } else {
                 res.redirect('/login')
             }
@@ -51,17 +51,17 @@ router.get('/me', (req, res) => {
 })
 
 router.get('/user', function (req, res) {
-	User.findOne({ userid: req.query.id, key: req.query.key }, (err, obj) => {
-		if (!obj) {
-			res.send('User not in Database');
-		} else {
+    User.findOne({ userid: req.query.id, key: req.query.key }, (err, obj) => {
+        if (!obj) {
+            res.send('User not in Database');
+        } else {
             if(obj.enabled) {
                 res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface.html'))
                 return
             }
             res.send('Der User hat den Dienst deaktiviert!')
-		}
-	});
+        }
+    });
 });
 
 //Routes to the api
@@ -82,114 +82,114 @@ router.get('/api/v1/login', function(req, res) {
 });
 
 router.get('/api/v1/login_callback', function(req, res) {
-var code = req.query.code || null;
-var state = req.query.state || null;
-var storedState = req.cookies ? req.cookies[stateKey] : null;
-console.log(req.cookies)
-console.log(req.cookies[stateKey])
-console.log(state)
-console.log(storedState)
+    var code = req.query.code || null;
+    var state = req.query.state || null;
+    var storedState = req.cookies ? req.cookies[stateKey] : null;
+    console.log(req.cookies)
+    console.log(req.cookies[stateKey])
+    console.log(state)
+    console.log(storedState)
 
-if (state === null || state !== storedState) {
-    res.redirect('/#' +
-    querystring.stringify({
-        error: 'state_mismatch'
-    }));
-} else {
-    res.clearCookie(stateKey);
-    var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-    },
-    headers: {
-        'Authorization': b64token
-    },
-    json: true
-    };
-
-    request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-
-        var access_token = body.access_token,
-            refresh_token = body.refresh_token;
-
-        var options = {
-        url: 'https://api.spotify.com/v1/me',
-        headers: { 'Authorization': 'Bearer ' + access_token },
+    if (state === null || state !== storedState) {
+        res.redirect('/#' +
+        querystring.stringify({
+            error: 'state_mismatch'
+        }));
+    } else {
+        res.clearCookie(stateKey);
+        var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+            code: code,
+            redirect_uri: redirect_uri,
+            grant_type: 'authorization_code'
+        },
+        headers: {
+            'Authorization': b64token
+        },
         json: true
         };
 
-        var secret = ""
+        request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
 
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-            console.log(body)
-            User.findOne({ userid: body.id}, (err, result) => {
-                if(err){
-                    throw err;
-                }
+            var access_token = body.access_token,
+                refresh_token = body.refresh_token;
 
-                if(!result) {
-                    newUser = new User({
-                        userid: body.id,
-                        enabled: false,
-                        secret: randomString.get(256),
-                        refreshToken: refresh_token,
-                        key: randomString.get(16),
-                        displayname: body.display_name,
-                    })
+            var options = {
+            url: 'https://api.spotify.com/v1/me',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+            };
 
-                    newUser.save((err, user) => {
-                        if(err) {
-                            throw err;
-                        }
-                        secret = user.secret
-                        console.log('Registered User ' + user.userid)
-                    })
-                } else {
-                    secret = result.secret
-                    console.log('Logged in User ' + result.userid)
-                }
-                res.clearCookie('secret');
-                res.clearCookie('userid');
-                res.cookie('secret', secret)
-                res.cookie('userid', body.id)
-                res.redirect('/me')
-            })
+            var secret = ""
+
+            // use the access token to access the Spotify Web API
+            request.get(options, function(error, response, body) {
+                console.log(body)
+                User.findOne({ userid: body.id}, (err, result) => {
+                    if(err){
+                        throw err;
+                    }
+
+                    if(!result) {
+                        newUser = new User({
+                            userid: body.id,
+                            enabled: false,
+                            secret: randomString.get(256),
+                            refreshToken: refresh_token,
+                            key: randomString.get(16),
+                            displayname: body.display_name,
+                        })
+
+                        newUser.save((err, user) => {
+                            if(err) {
+                                throw err;
+                            }
+                            secret = user.secret
+                            console.log('Registered User ' + user.userid)
+                        })
+                    } else {
+                        secret = result.secret
+                        console.log('Logged in User ' + result.userid)
+                    }
+                    res.clearCookie('secret');
+                    res.clearCookie('userid');
+                    res.cookie('secret', secret)
+                    res.cookie('userid', body.id)
+                    res.redirect('/me')
+                })
+            });
+        } else {
+            res.redirect('/#' +
+            querystring.stringify({
+                error: 'invalid_token'
+            }));
+        }
         });
-    } else {
-        res.redirect('/#' +
-        querystring.stringify({
-            error: 'invalid_token'
-        }));
     }
-    });
-}
 });
 
 router.get('/api/v1/getTracksBySearch', (req, res) => {
     var search_term = req.query.track;
 
     var options = {
-		url: 'https://accounts.spotify.com/api/token',
-		headers: {
-			Authorization: b64token,
-		},
-		form: {
-			grant_type: 'client_credentials',
-		},
-		json: true,
-	};
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+            Authorization: b64token,
+        },
+        form: {
+            grant_type: 'client_credentials',
+        },
+        json: true,
+    };
 
-	// Make Post Request to get Auth Token
-	request.post(options, (error, response, body) => {
+    // Make Post Request to get Auth Token
+    request.post(options, (error, response, body) => {
         var access_token = body.access_token;
 
-		// If there is no Error Callback Spotify Api Access Token
-		if (!error && response.statusCode === 200) {
+        // If there is no Error Callback Spotify Api Access Token
+        if (!error && response.statusCode === 200) {
             var options = {
                 url:
                     'https://api.spotify.com/v1/search?q=' +
@@ -256,27 +256,27 @@ router.get('/api/v1/getTracksBySearch', (req, res) => {
                     console.log('Getting Songs Failed!');
                 }
             });
-		} else {
-			console.log('Authentication Failed!');
-		}
-	});
+        } else {
+            console.log('Authentication Failed!');
+        }
+    });
 });
 
 router.get('/api/v1/addsong', (req, res) => {
     var userid = req.query.user;
-	var songid = req.query.song;
+    var songid = req.query.song;
     var key = req.query.key;
 
-	User.findOne({ userid: userid }, (err, result) => {
-		if (!result) {
-			console.log('User not in Database');
-		} else {
+    User.findOne({ userid: userid }, (err, result) => {
+        if (!result) {
+            console.log('User not in Database');
+        } else {
             if(key != result.key){
                 res.send('Wrong Key!');
                 return
             }
 
-			//Access Token get new one
+            //Access Token get new one
             var authOptions = {
                 url: 'https://accounts.spotify.com/api/token',
                 headers: { 'Authorization': b64token },
@@ -306,20 +306,20 @@ router.get('/api/v1/addsong', (req, res) => {
                     });
                 }
             });
-		}
-	});
+        }
+    });
 })
 
 router.get('/api/v1/getlink', (req, res) => {
     var secret = req.cookies['secret'];
 
     User.findOne({ secret: secret }, (err, obj) => {
-		if (obj) {
-			res.send('http://localhost:3000/user?id=' + obj.userid + '&key=' + obj.key);
-		} else {
+        if (obj) {
+            res.send('http://localhost:3000/user?id=' + obj.userid + '&key=' + obj.key);
+        } else {
             res.send('Invalid Secret')
-		}
-	});
+        }
+    });
 })
 
 router.get('/api/v1/getname', (req, res) => {
@@ -327,12 +327,12 @@ router.get('/api/v1/getname', (req, res) => {
     var userid = req.cookies['userid'];
 
     User.findOne({ secret: secret, userid: userid }, (err, obj) => {
-		if (obj) {
-			res.send(obj.displayname);
-		} else {
+        if (obj) {
+            res.send(obj.displayname);
+        } else {
             res.send('Invalid Secret')
-		}
-	});
+        }
+    });
 })
 
 router.get('/api/v1/setenabled', (req, res) => {
@@ -340,7 +340,7 @@ router.get('/api/v1/setenabled', (req, res) => {
     var userid = req.cookies['userid'];
 
     User.findOne({ secret: secret, userid: userid }, (err, obj) => {
-		if (obj) {
+        if (obj) {
             obj.enabled = req.query.state;
             obj.save(function (err) {
                 if (err)
@@ -349,10 +349,10 @@ router.get('/api/v1/setenabled', (req, res) => {
                 }
                 res.send('Changed');
             });
-		} else {
+        } else {
             res.send('Invalid Secret')
-		}
-	});
+        }
+    });
 })
 
 router.get('/api/v1/generate_key', (req, res) => {
@@ -360,7 +360,7 @@ router.get('/api/v1/generate_key', (req, res) => {
     var userid = req.cookies['userid'];
 
     User.findOne({ secret: secret, userid: userid }, (err, obj) => {
-		if (obj) {
+        if (obj) {
             obj.key = randomString.get(16);
             obj.save(function (err) {
                 if (err)
@@ -369,10 +369,10 @@ router.get('/api/v1/generate_key', (req, res) => {
                 }
                 res.send('Changed');
             });
-		} else {
+        } else {
             res.send('Invalid Secret')
-		}
-	});
+        }
+    });
 })
 
 router.get('/api/v1/getenabled', (req, res) => {
@@ -380,26 +380,26 @@ router.get('/api/v1/getenabled', (req, res) => {
     var userid = req.cookies['userid'];
 
     User.findOne({ secret: secret, userid: userid }, (err, obj) => {
-		if (obj) {
-			res.send({enabled: obj.enabled});
-		} else {
+        if (obj) {
+            res.send({enabled: obj.enabled});
+        } else {
             res.send('Invalid Secret')
-		}
-	});
+        }
+    });
 })
 
 //Database Connection and opening of Port
 mongoose
-	.connect(mongoDbUri, { useNewUrlParser: true, useUnifiedTopology: true })
-	.then((result) => {
-		console.log('Connected to Database');
-		app.listen(3000, () => console.log('Listen to 3000'));
-		app.use(cors())
-		app.use(express.json())
-		app.use(express.urlencoded({extended: true}))
-	})
-	.catch((err) => {
-		console.log(err);
-	});
+    .connect(mongoDbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then((result) => {
+        console.log('Connected to Database');
+        app.listen(3000, () => console.log('Listen to 3000'));
+        app.use(cors())
+        app.use(express.json())
+        app.use(express.urlencoded({extended: true}))
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 
 module.exports.handler = serverless(app)
