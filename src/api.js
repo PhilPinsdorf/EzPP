@@ -20,7 +20,7 @@ app.use('/.netlify/functions/api', router);
 
 var client_id = '7c4553c111d241b7ba3f7038f77e2e87'; 
 var client_secret = '5bbe8d46b303428b993a475250e31278'; 
-var redirect_uri = 'http://localhost:3000/api/v1/login_callback';
+var redirect_uri = 'https://ezpp.netlify.app/.netlify/functions/api/api/v1/login_callback';
 var stateKey = 'spotify_auth_state';
 var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
