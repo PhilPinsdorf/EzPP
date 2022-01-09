@@ -16,6 +16,7 @@ const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.
 const app = express();
 const router = express.Router();
 app.use(express.static('public'))
+app.use(cookieParser())
 app.use('/.netlify/functions/api', router);
 
 var client_id = '7c4553c111d241b7ba3f7038f77e2e87'; 
@@ -398,7 +399,6 @@ mongoose
 		console.log('Connected to Database');
 		app.listen(3000, () => console.log('Listen to 3000'));
 		app.use(cors())
-		app.use(cookieParser())
 		app.use(express.json())
 		app.use(express.urlencoded({extended: true}))
 	})
