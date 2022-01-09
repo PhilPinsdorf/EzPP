@@ -67,10 +67,7 @@ router.get('/user', function (req, res) {
 //Routes to the api
 router.get('/api/v1/login', function(req, res) {
     var state = randomString.get(16);
-    res.cookie(stateKey, state, {
-        secure:true,
-        sameSite:'strict'
-    });
+    res.cookie(stateKey, state);
 
     var scope = 'user-read-private user-read-email';
     res.redirect('https://accounts.spotify.com/authorize?' +
@@ -88,7 +85,6 @@ router.get('/api/v1/login_callback', function(req, res) {
 var code = req.query.code || null;
 var state = req.query.state || null;
 var storedState = req.cookies ? req.cookies[stateKey] : null;
-console.log(req)
 console.log(req.cookies)
 console.log(req.cookies[stateKey])
 console.log(state)
