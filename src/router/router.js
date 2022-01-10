@@ -55,7 +55,7 @@ router.get('/user', function (req, res) {
 });
 
 router.get('/login', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'))
+    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login.html'))
 })
 
 //Routes to the api
