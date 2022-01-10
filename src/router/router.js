@@ -54,6 +54,10 @@ router.get('/user', function (req, res) {
 	});
 });
 
+router.get('/login', (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'))
+})
+
 //Routes to the api
 router.get('/api/v1/login', function(req, res) {
     var state = randomString.get(16);
