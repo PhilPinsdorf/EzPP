@@ -305,7 +305,7 @@ router.get('/api/v1/getlink', (req, res) => {
 
     User.findOne({ secret: secret }, (err, obj) => {
 		if (obj) {
-			res.send('http://localhost:3000/user?id=' + obj.userid + '&key=' + obj.key);
+			res.send('https://ezpp.herokuapp.com/user?id=' + obj.userid + '&key=' + obj.key);
 		} else {
             res.send('Invalid Secret')
 		}
