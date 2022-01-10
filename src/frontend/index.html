@@ -1,85 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EzPP</title>
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="grid-container">
-        <div class="item1">Header</div>
-        <div class="item2">Instructions</div>
-        <div class="item3">
-          <button class="login-button" onClick="login()">
-            Log In with Spotify
-          </button>
-        </div>
-        <div class="item4">Footer</div>
-      </div>
-    </div>
-  </body>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>EzPP</title>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="grid-container">
+				<div class="item1">Header</div>
+				<div class="item2">Instructions</div>
+				<div class="item3">
+					<button class="login-button" onClick="login()">Log In with Spotify</button>
+				</div>
+				<div class="item4">Footer</div>
+			</div>
+		</div>
+	</body>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
-    * {
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
-    }
+		* {
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
 
-    html {
-      background-color: rgb(46, 46, 46);
-    }
+		html {
+			background-color: rgb(46, 46, 46);
+		}
 
-    .item1 {
-      grid-area: 1 1 1 1;
-      border: 1px solid red;
-    }
-    .item2 {
-      grid-area: 2 1 2 1;
-      border: 1px solid red;
-    }
-    .item3 {
-      grid-area: 3 1 3 1;
-      border: 1px solid red;
-    }
-    .item4 {
-      grid-area: 4 1 4 1;
-      background-color: #464646;
-      color: aliceblue;
-    }
+		.item1 {
+			grid-area: 1 1 1 1;
+			border: 1px solid red;
+		}
+		.item2 {
+			grid-area: 2 1 2 1;
+			border: 1px solid red;
+		}
+		.item3 {
+			grid-area: 3 1 3 1;
+			border: 1px solid red;
+		}
+		.item4 {
+			grid-area: 4 1 4 1;
+			background-color: #464646;
+			color: aliceblue;
+		}
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: 100%;
-      grid-template-rows: 7% 70% 20% 3%;
-      width: 100vw;
-      height: 100vh;
-    }
+		.grid-container {
+			display: grid;
+			grid-template-columns: 100%;
+			grid-template-rows: 7% 70% 20% 3%;
+			width: 100vw;
+			height: 100vh;
+		}
 
-    .login-button {
-      width: 30%;
-      height: 30%;
-      margin: 0 auto;
-      position: relative;
-      top: 50%;
-      left: 50%;
-      margin-right: -50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Source Code Pro', monospace;
-      font-size: x-large;
-      border: transparent;
-      border-radius: 3px;
-      color: #fff;
-      background: #651fff;
-      cursor: pointer;
-    }
-  </style>
-  <script>
-    function login() {
-      window.location = 'http://localhost:3000/api/v1/login';
-    }
-  </script>
+		.login-button {
+			width: 30%;
+			height: 30%;
+			margin: 0 auto;
+			position: relative;
+			top: 50%;
+			left: 50%;
+			margin-right: -50%;
+			transform: translate(-50%, -50%);
+			font-family: 'Source Code Pro', monospace;
+			font-size: x-large;
+			border: transparent;
+			border-radius: 3px;
+			color: #fff;
+			background: #651fff;
+			cursor: pointer;
+		}
+	</style>
+	<script>
+		function login() {
+			window.location = 'https://ezpp.herokuapp.com/api/v1/login';
+		}
+	</script>
 </html>
