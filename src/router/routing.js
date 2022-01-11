@@ -1,50 +1,50 @@
-const express = require('express');
-const path = require('path');
-const User = require('../modules/user.js');
+const express = require("express");
+const path = require("path");
+const User = require("../modules/user.js");
 
 const router = express.Router();
 
 // Routes to public sites
-router.get('/', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/index.html'))
-})
+router.get("/", (req, res) => {
+	res.status(200).sendFile(path.resolve(__dirname + "/../frontend/index.html"));
+});
 
-router.get('/me', (req, res) => {
-    var secret = req.cookies['secret'];
-    var userid = req.cookies['userid'];
-    if(secret != null && userid != null) {
-        User.findOne({ userid: userid, secret: secret}, (err, result) => {
-            if(err){
-                throw err;
-            }
+router.get("/me", (req, res) => {
+	var secret = req.cookies["secret"];
+	var userid = req.cookies["userid"];
+	if (secret != null && userid != null) {
+		User.findOne({ userid: userid, secret: secret }, (err, result) => {
+			if (err) {
+				throw err;
+			}
 
-            if(result) {
-                res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'))
-            } else {
-                res.redirect('/login')
-            }
-        })
-    } else {
-        res.redirect('/login')
-    }
-})
+			if (result) {
+				res.status(200).sendFile(path.resolve(__dirname + "/../frontend/me.html"));
+			} else {
+				res.redirect("/login");
+			}
+		});
+	} else {
+		res.redirect("/login");
+	}
+});
 
-router.get('/user', function (req, res) {
+router.get("/user", function (req, res) {
 	User.findOne({ userid: req.query.id, key: req.query.key }, (err, obj) => {
 		if (!obj) {
-			res.send('User not in Database');
+			res.send("User not in Database");
 		} else {
-            if(obj.enabled) {
-                res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface.html'))
-                return
-            }
-            res.send('Der User hat den Dienst deaktiviert!')
+			if (obj.enabled) {
+				res.status(200).sendFile(path.resolve(__dirname + "/../frontend/searchinterface.html"));
+				return;
+			}
+			res.send("Der User hat den Dienst deaktiviert!");
 		}
 	});
 });
 
-router.get('/login', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login.html'))
-})
+router.get("/login", (req, res) => {
+	res.status(200).sendFile(path.resolve(__dirname + "/../frontend/login.html"));
+});
 
 module.exports = router;
