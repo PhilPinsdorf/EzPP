@@ -14,7 +14,7 @@ var spotifyApi = new SpotifyWebApi({
   redirectUri: 'https://ezpp.herokuapp.com/api/v1/login_callback'
 });
 
-var scope = 'user-read-private';
+var scope = ['user-read-private'];
 var stateKey = 'spotify_auth_state';
 // var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
