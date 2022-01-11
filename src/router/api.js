@@ -49,6 +49,14 @@ api.get('/login_callback', function (req, res) {
 
 		var refresh_token = data.body['refresh_token'];
 		spotifyApi.setRefreshToken(refresh_token);
+		spotifyApi.refreshAccessToken().then(
+			function(data) {
+				spotifyApi.setAccessToken(data.body['access_token']);
+			},
+			function(err) {
+				console.log('Could not refresh access token', err);
+			}
+		)
 
 		spotifyApi.getMe()
 		.then(function(data) {
@@ -91,8 +99,10 @@ api.get('/login_callback', function (req, res) {
 			});
 		}, function(err) {
 			console.log('Something went wrong!', err);
+		}).then(() => {
+			spotifyApi.resetRefreshToken();
+			spotifyApi.resetAccessToken();
 		});
-		spotifyApi.resetRefreshToken(); 
 	}, function(err) {
 		console.log('Something went wrong!', err);
 	});
