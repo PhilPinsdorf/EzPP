@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Me</title>
+		<link rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" defer></script>
+		<script type="text/javascript" src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js" defer></script>
+		<script src="script.js" defer></script>
+	</head>
+	<body>
+		<div class="nonprintable">
+			<h1 class="nametitle">Hallo,</h1>
+			<table border="1" frame="void" rules="rows">
+				<tr>
+					<td class="left">Soll der Service aktiviert sein?</td>
+					<td class="right">
+						<button class="actbutton" onclick="save_activate()">Ja!</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="left">Generiere einen neuen Zugangs Link. Der alte Link wird ungültig.</td>
+					<td class="right">
+						<button onclick="generate_new_key()">Generieren!</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="left">Kopiere den Link für deine Freunde!</td>
+					<td class="right">
+						<button class="copybutton" onclick="copy_content()">Link Kopieren!</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="left">Drucke den QR Code für alle Personen zum Scannen aus!</td>
+					<td class="right">
+						<button class="print" onclick="print_content()">Drucken!</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="printable">
+			<h1 class="printtitle"><u></u></h1>
+			<br />
+			<h2>1. Scanne den Qr Code ein</h2>
+			<h2>2. Suche nach einem Song</h2>
+			<h2>3. Füge ihn mit dem + Hinzu</h2>
+			<br />
+			<br />
+			<div class="qrcode"></div>
+		</div>
+	</body>
+</html>
