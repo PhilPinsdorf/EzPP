@@ -14,7 +14,7 @@ var stateKey = 'spotify_auth_state';
 var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
 //Routes to the api
-router.get('/login', function(req, res) {
+api.get('/login', function(req, res) {
     var state = randomString.get(16);
     res.cookie(stateKey, state);
 
@@ -30,7 +30,7 @@ router.get('/login', function(req, res) {
     }));
 });
 
-router.get('/login_callback', function(req, res) {
+api.get('/login_callback', function(req, res) {
 var code = req.query.code || null;
 var state = req.query.state || null;
 var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -115,7 +115,7 @@ if (state === null || state !== storedState) {
 }
 });
 
-router.get('/getTracksBySearch', (req, res) => {
+api.get('/getTracksBySearch', (req, res) => {
     var search_term = req.query.track;
 
     var options = {
@@ -207,7 +207,7 @@ router.get('/getTracksBySearch', (req, res) => {
 	});
 });
 
-router.get('/addsong', (req, res) => {
+api.get('/addsong', (req, res) => {
     var userid = req.query.user;
 	var songid = req.query.song;
     var key = req.query.key;
@@ -255,7 +255,7 @@ router.get('/addsong', (req, res) => {
 	});
 })
 
-router.get('/getlink', (req, res) => {
+api.get('/getlink', (req, res) => {
     var secret = req.cookies['secret'];
 
     User.findOne({ secret: secret }, (err, obj) => {
@@ -267,7 +267,7 @@ router.get('/getlink', (req, res) => {
 	});
 })
 
-router.get('/getname', (req, res) => {
+api.get('/getname', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -280,7 +280,7 @@ router.get('/getname', (req, res) => {
 	});
 })
 
-router.get('/setenabled', (req, res) => {
+api.get('/setenabled', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -300,7 +300,7 @@ router.get('/setenabled', (req, res) => {
 	});
 })
 
-router.get('/generate_key', (req, res) => {
+api.get('/generate_key', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -320,7 +320,7 @@ router.get('/generate_key', (req, res) => {
 	});
 })
 
-router.get('/getenabled', (req, res) => {
+api.get('/getenabled', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
