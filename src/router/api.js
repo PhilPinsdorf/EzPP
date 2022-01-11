@@ -1,57 +1,56 @@
-const express = require("express");
-const randomString = require("../utils/randomString.js");
-const querystring = require("querystring");
-const request = require("request");
-const User = require("../modules/user.js");
-const base64 = require("base-64");
+const express = require('express');
+const randomString = require('../utils/randomString.js');
+const querystring = require('querystring');
+const request = require('request');
+const User = require('../modules/user.js');
+const base64 = require('base-64');
 
 const api = express.Router();
 
-var client_id = "7c4553c111d241b7ba3f7038f77e2e87";
-var client_secret = "5bbe8d46b303428b993a475250e31278";
-var redirect_uri = "https://ezpp.herokuapp.com/api/v1/login_callback";
-var stateKey = "spotify_auth_state";
-var b64token = "Basic " + base64.encode(client_id + ":" + client_secret).toString();
+var client_id = '7c4553c111d241b7ba3f7038f77e2e87';
+var client_secret = '5bbe8d46b303428b993a475250e31278';
+var redirect_uri = 'https://ezpp.herokuapp.com/api/v1/login_callback';
+var stateKey = 'spotify_auth_state';
+var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
 //Routes to the api
-api.get("/login", function (req, res) {
+api.get('/login', function (req, res) {
 	var state = randomString.get(16);
 	res.cookie(stateKey, state);
 
-	var scope = "user-read-private user-read-email";
+	var scope = 'user-read-private';
 	res.redirect(
-		"https://accounts.spotify.com/authorize?" +
+		'https://accounts.spotify.com/authorize?' +
 			querystring.stringify({
-				response_type: "code",
+				response_type: 'code',
 				client_id: client_id,
 				scope: scope,
 				redirect_uri: redirect_uri,
 				state: state,
-				show_dialog: true,
 			})
 	);
 });
 
-api.get("/login_callback", function (req, res) {
+api.get('/login_callback', function (req, res) {
 	var code = req.query.code || null;
 	var state = req.query.state || null;
 	var storedState = req.cookies ? req.cookies[stateKey] : null;
 
 	if (state === null || state !== storedState) {
 		res.redirect(
-			"/#" +
+			'/#' +
 				querystring.stringify({
-					error: "state_mismatch",
+					error: 'state_mismatch',
 				})
 		);
 	} else {
 		res.clearCookie(stateKey);
 		var authOptions = {
-			url: "https://accounts.spotify.com/api/token",
+			url: 'https://accounts.spotify.com/api/token',
 			form: {
 				code: code,
 				redirect_uri: redirect_uri,
-				grant_type: "authorization_code",
+				grant_type: 'authorization_code',
 			},
 			headers: {
 				Authorization: b64token,
@@ -65,12 +64,12 @@ api.get("/login_callback", function (req, res) {
 					refresh_token = body.refresh_token;
 
 				var options = {
-					url: "https://api.spotify.com/v1/me",
-					headers: { Authorization: "Bearer " + access_token },
+					url: 'https://api.spotify.com/v1/me',
+					headers: { Authorization: 'Bearer ' + access_token },
 					json: true,
 				};
 
-				var secret = "";
+				var secret = '';
 
 				// use the access token to access the Spotify Web API
 				request.get(options, function (error, response, body) {
@@ -95,24 +94,24 @@ api.get("/login_callback", function (req, res) {
 									throw err;
 								}
 								secret = user.secret;
-								console.log("Registered User " + user.userid);
+								console.log('Registered User ' + user.userid);
 							});
 						} else {
 							secret = result.secret;
-							console.log("Logged in User " + result.userid);
+							console.log('Logged in User ' + result.userid);
 						}
-						res.clearCookie("secret");
-						res.clearCookie("userid");
-						res.cookie("secret", secret);
-						res.cookie("userid", body.id);
-						res.redirect("/me");
+						res.clearCookie('secret');
+						res.clearCookie('userid');
+						res.cookie('secret', secret);
+						res.cookie('userid', body.id);
+						res.redirect('/me');
 					});
 				});
 			} else {
 				res.redirect(
-					"/#" +
+					'/#' +
 						querystring.stringify({
-							error: "invalid_token",
+							error: 'invalid_token',
 						})
 				);
 			}
@@ -120,16 +119,16 @@ api.get("/login_callback", function (req, res) {
 	}
 });
 
-api.get("/getTracksBySearch", (req, res) => {
+api.get('/getTracksBySearch', (req, res) => {
 	var search_term = req.query.track;
 
 	var options = {
-		url: "https://accounts.spotify.com/api/token",
+		url: 'https://accounts.spotify.com/api/token',
 		headers: {
 			Authorization: b64token,
 		},
 		form: {
-			grant_type: "client_credentials",
+			grant_type: 'client_credentials',
 		},
 		json: true,
 	};
@@ -141,9 +140,9 @@ api.get("/getTracksBySearch", (req, res) => {
 		// If there is no Error Callback Spotify Api Access Token
 		if (!error && response.statusCode === 200) {
 			var options = {
-				url: "https://api.spotify.com/v1/search?q=" + search_term + "&type=track&limit=10&market=DE",
+				url: 'https://api.spotify.com/v1/search?q=' + search_term + '&type=track&limit=10&market=DE',
 				headers: {
-					Authorization: "Bearer " + access_token,
+					Authorization: 'Bearer ' + access_token,
 				},
 				json: true,
 			};
@@ -162,9 +161,9 @@ api.get("/getTracksBySearch", (req, res) => {
 					for (var i = 0; i < max_tracks; i++) {
 						(function (cntr) {
 							var options = {
-								url: "https://api.spotify.com/v1/tracks/" + ids[cntr] + "?market=DE",
+								url: 'https://api.spotify.com/v1/tracks/' + ids[cntr] + '?market=DE',
 								headers: {
-									Authorization: "Bearer " + access_token,
+									Authorization: 'Bearer ' + access_token,
 								},
 								json: true,
 							};
@@ -174,18 +173,18 @@ api.get("/getTracksBySearch", (req, res) => {
 								if (!error && response.statusCode === 200) {
 									// If there is no Error get Important Data from Song
 									var obj = {};
-									obj["name"] = body.name;
-									obj["preview"] = body.preview_url;
-									obj["image"] = body.album.images[0].url;
-									var arts = "";
+									obj['name'] = body.name;
+									obj['preview'] = body.preview_url;
+									obj['image'] = body.album.images[0].url;
+									var arts = '';
 									for (var a = 0; a < body.artists.length; a++) {
 										if (arts.length) {
-											arts += ", ";
+											arts += ', ';
 										}
 										arts += body.artists[a].name;
 									}
-									obj["artists"] = arts;
-									obj["id"] = body.id;
+									obj['artists'] = arts;
+									obj['id'] = body.id;
 
 									importantData.push(obj);
 
@@ -193,41 +192,41 @@ api.get("/getTracksBySearch", (req, res) => {
 										res.send(importantData);
 									}
 								} else {
-									console.log("Getting Track Failed!");
+									console.log('Getting Track Failed!');
 								}
 							});
 						})(i);
 					}
 				} else {
-					console.log("Getting Songs Failed!");
+					console.log('Getting Songs Failed!');
 				}
 			});
 		} else {
-			console.log("Authentication Failed!");
+			console.log('Authentication Failed!');
 		}
 	});
 });
 
-api.get("/addsong", (req, res) => {
+api.get('/addsong', (req, res) => {
 	var userid = req.query.user;
 	var songid = req.query.song;
 	var key = req.query.key;
 
 	User.findOne({ userid: userid }, (err, result) => {
 		if (!result) {
-			console.log("User not in Database");
+			console.log('User not in Database');
 		} else {
 			if (key != result.key) {
-				res.send("Wrong Key!");
+				res.send('Wrong Key!');
 				return;
 			}
 
 			//Access Token get new one
 			var authOptions = {
-				url: "https://accounts.spotify.com/api/token",
+				url: 'https://accounts.spotify.com/api/token',
 				headers: { Authorization: b64token },
 				form: {
-					grant_type: "refresh_token",
+					grant_type: 'refresh_token',
 					refresh_token: result.refreshToken,
 				},
 				json: true,
@@ -237,14 +236,14 @@ api.get("/addsong", (req, res) => {
 				if (!error && response.statusCode === 200) {
 					var access_token = body.access_token;
 					var queueOptions = {
-						url: "https://api.spotify.com/v1/me/player/queue?uri=" + encodeURIComponent("spotify:track:" + songid),
-						headers: { Authorization: "Bearer " + access_token },
+						url: 'https://api.spotify.com/v1/me/player/queue?uri=' + encodeURIComponent('spotify:track:' + songid),
+						headers: { Authorization: 'Bearer ' + access_token },
 						json: true,
 					};
 
 					request.post(queueOptions, (error, response, body) => {
 						if (response.statusCode === 204) {
-							res.send("Added Song!");
+							res.send('Added Song!');
 						}
 						res.end();
 					});
@@ -254,34 +253,34 @@ api.get("/addsong", (req, res) => {
 	});
 });
 
-api.get("/getlink", (req, res) => {
-	var secret = req.cookies["secret"];
+api.get('/getlink', (req, res) => {
+	var secret = req.cookies['secret'];
 
 	User.findOne({ secret: secret }, (err, obj) => {
 		if (obj) {
-			res.send("https://ezpp.herokuapp.com/user?id=" + obj.userid + "&key=" + obj.key);
+			res.send('https://ezpp.herokuapp.com/user?id=' + obj.userid + '&key=' + obj.key);
 		} else {
-			res.send("Invalid Secret");
+			res.send('Invalid Secret');
 		}
 	});
 });
 
-api.get("/getname", (req, res) => {
-	var secret = req.cookies["secret"];
-	var userid = req.cookies["userid"];
+api.get('/getname', (req, res) => {
+	var secret = req.cookies['secret'];
+	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
 		if (obj) {
 			res.send(obj.displayname);
 		} else {
-			res.send("Invalid Secret");
+			res.send('Invalid Secret');
 		}
 	});
 });
 
-api.get("/setenabled", (req, res) => {
-	var secret = req.cookies["secret"];
-	var userid = req.cookies["userid"];
+api.get('/setenabled', (req, res) => {
+	var secret = req.cookies['secret'];
+	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
 		if (obj) {
@@ -290,17 +289,17 @@ api.get("/setenabled", (req, res) => {
 				if (err) {
 					throw err;
 				}
-				res.send("Changed");
+				res.send('Changed');
 			});
 		} else {
-			res.send("Invalid Secret");
+			res.send('Invalid Secret');
 		}
 	});
 });
 
-api.get("/generate_key", (req, res) => {
-	var secret = req.cookies["secret"];
-	var userid = req.cookies["userid"];
+api.get('/generate_key', (req, res) => {
+	var secret = req.cookies['secret'];
+	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
 		if (obj) {
@@ -309,23 +308,23 @@ api.get("/generate_key", (req, res) => {
 				if (err) {
 					throw err;
 				}
-				res.send("Changed");
+				res.send('Changed');
 			});
 		} else {
-			res.send("Invalid Secret");
+			res.send('Invalid Secret');
 		}
 	});
 });
 
-api.get("/getenabled", (req, res) => {
-	var secret = req.cookies["secret"];
-	var userid = req.cookies["userid"];
+api.get('/getenabled', (req, res) => {
+	var secret = req.cookies['secret'];
+	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
 		if (obj) {
 			res.send({ enabled: obj.enabled });
 		} else {
-			res.send("Invalid Secret");
+			res.send('Invalid Secret');
 		}
 	});
 });
