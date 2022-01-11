@@ -45,67 +45,64 @@ api.get('/login_callback', function (req, res) {
 	// Retrieve an access token and a refresh token
 	spotifyApi.authorizationCodeGrant(code)
 	.then(function(data) {
-		console.log('The token expires in ' + data.body['expires_in']);
-
 		var refresh_token = data.body['refresh_token'];
 		spotifyApi.setRefreshToken(refresh_token);
-		spotifyApi.refreshAccessToken().then(
-			function(data) {
-				spotifyApi.setAccessToken(data.body['access_token']);
-			},
-			function(err) {
-				console.log('Could not refresh access token', err);
-			}
-		)
-
-		spotifyApi.getMe()
+		spotifyApi.refreshAccessToken()
 		.then(function(data) {
-			var id = data.body['id'],
-				display_name = data.body['display_name'],
-				secret = '';
+			spotifyApi.setAccessToken(data.body['access_token']);
+			spotifyApi.getMe()
+			.then(function(data) {
+				var id = data.body['id'],
+					display_name = data.body['display_name'],
+					secret = '';
 
-			User.findOne({ userid: id }, (err, result) => {
-				if (err) {
-					throw err;
-				}
+				User.findOne({ userid: id }, (err, result) => {
+					if (err) {
+						throw err;
+					}
 
-				if (!result) {
-					newUser = new User({
-						userid: id,
-						enabled: false,
-						secret: randomString.get(256),
-						refreshToken: refresh_token,
-						key: randomString.get(16),
-						displayname: display_name,
-					});
+					if (!result) {
+						newUser = new User({
+							userid: id,
+							enabled: false,
+							secret: randomString.get(256),
+							refreshToken: refresh_token,
+							key: randomString.get(16),
+							displayname: display_name,
+						});
 
-					newUser.save((err, user) => {
-						if (err) {
-							throw err;
-						}
-						secret = user.secret;
-						console.log('Registered User ' + user.displayname);
-					});
-				} else {
-					secret = result.secret;
-					console.log('Logged in User ' + result.displayname);
-				}
+						newUser.save((err, user) => {
+							if (err) {
+								throw err;
+							}
+							secret = user.secret;
+							console.log('Registered User ' + user.displayname);
+						});
+					} else {
+						secret = result.secret;
+						console.log('Logged in User ' + result.displayname);
+					}
 
-				res.clearCookie('secret');
-				res.cookie('secret', secret);
-				res.clearCookie('userid');
-				res.cookie('userid', id);
-				res.redirect('/me');
+					res.clearCookie('secret');
+					res.cookie('secret', secret);
+					res.clearCookie('userid');
+					res.cookie('userid', id);
+					res.redirect('/me');
+				});
+			}, function(err) {
+				console.log('Something went wrong!', err);
+			}).then(() => {
+				spotifyApi.resetRefreshToken();
+				spotifyApi.resetAccessToken();
 			});
-		}, function(err) {
-			console.log('Something went wrong!', err);
-		}).then(() => {
-			spotifyApi.resetRefreshToken();
-			spotifyApi.resetAccessToken();
-		});
-	}, function(err) {
-		console.log('Something went wrong!', err);
-	});
+			}, function(err) {
+				console.log('Something went wrong!', err);
+			});
+		},
+		function(err) {
+			console.log('Could not refresh access token', err);
+		}
+	)
 });
 
 api.get('/getTracksBySearch', (req, res) => {
