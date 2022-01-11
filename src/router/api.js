@@ -16,7 +16,7 @@ var spotifyApi = new SpotifyWebApi({
 
 var scope = 'user-read-private';
 var stateKey = 'spotify_auth_state';
-var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
+// var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
 //Routes to the api
 api.get('/login', function (req, res) {
