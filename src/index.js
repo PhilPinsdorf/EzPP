@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const router = require('./router/router.js');
+const routing = require('./router/routing.js');
+const api = require('./router/api.js');
 
 const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.net/EzPP?retryWrites=true&w=majority'
 
@@ -13,7 +14,8 @@ app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use('/', router);
+app.use('/', routing);
+app.use('/api/v1/', api);
 
 //Database Connection and opening of Port
 mongoose

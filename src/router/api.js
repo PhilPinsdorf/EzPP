@@ -2,12 +2,10 @@ const express = require('express');
 const randomString = require('../utils/randomString.js');
 const querystring = require('querystring');
 const request = require('request')
-const path = require('path');
 const User = require('../modules/user.js');
 const base64 = require('base-64');
-const { urlencoded } = require('express');
 
-const router = express.Router();
+const api = express.Router();
 
 var client_id = '7c4553c111d241b7ba3f7038f77e2e87'; 
 var client_secret = '5bbe8d46b303428b993a475250e31278'; 
@@ -15,51 +13,8 @@ var redirect_uri = 'https://ezpp.herokuapp.com/api/v1/login_callback';
 var stateKey = 'spotify_auth_state';
 var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
-// Routes to public sites
-router.get('/', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/index.html'))
-})
-
-router.get('/me', (req, res) => {
-    var secret = req.cookies['secret'];
-    var userid = req.cookies['userid'];
-    if(secret != null && userid != null) {
-        User.findOne({ userid: userid, secret: secret}, (err, result) => {
-            if(err){
-                throw err;
-            }
-
-            if(result) {
-                res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'))
-            } else {
-                res.redirect('/login')
-            }
-        })
-    } else {
-        res.redirect('/login')
-    }
-})
-
-router.get('/user', function (req, res) {
-	User.findOne({ userid: req.query.id, key: req.query.key }, (err, obj) => {
-		if (!obj) {
-			res.send('User not in Database');
-		} else {
-            if(obj.enabled) {
-                res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface.html'))
-                return
-            }
-            res.send('Der User hat den Dienst deaktiviert!')
-		}
-	});
-});
-
-router.get('/login', (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login.html'))
-})
-
 //Routes to the api
-router.get('/api/v1/login', function(req, res) {
+router.get('/login', function(req, res) {
     var state = randomString.get(16);
     res.cookie(stateKey, state);
 
@@ -75,7 +30,7 @@ router.get('/api/v1/login', function(req, res) {
     }));
 });
 
-router.get('/api/v1/login_callback', function(req, res) {
+router.get('/login_callback', function(req, res) {
 var code = req.query.code || null;
 var state = req.query.state || null;
 var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -160,7 +115,7 @@ if (state === null || state !== storedState) {
 }
 });
 
-router.get('/api/v1/getTracksBySearch', (req, res) => {
+router.get('/getTracksBySearch', (req, res) => {
     var search_term = req.query.track;
 
     var options = {
@@ -252,7 +207,7 @@ router.get('/api/v1/getTracksBySearch', (req, res) => {
 	});
 });
 
-router.get('/api/v1/addsong', (req, res) => {
+router.get('/addsong', (req, res) => {
     var userid = req.query.user;
 	var songid = req.query.song;
     var key = req.query.key;
@@ -300,7 +255,7 @@ router.get('/api/v1/addsong', (req, res) => {
 	});
 })
 
-router.get('/api/v1/getlink', (req, res) => {
+router.get('/getlink', (req, res) => {
     var secret = req.cookies['secret'];
 
     User.findOne({ secret: secret }, (err, obj) => {
@@ -312,7 +267,7 @@ router.get('/api/v1/getlink', (req, res) => {
 	});
 })
 
-router.get('/api/v1/getname', (req, res) => {
+router.get('/getname', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -325,7 +280,7 @@ router.get('/api/v1/getname', (req, res) => {
 	});
 })
 
-router.get('/api/v1/setenabled', (req, res) => {
+router.get('/setenabled', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -345,7 +300,7 @@ router.get('/api/v1/setenabled', (req, res) => {
 	});
 })
 
-router.get('/api/v1/generate_key', (req, res) => {
+router.get('/generate_key', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -365,7 +320,7 @@ router.get('/api/v1/generate_key', (req, res) => {
 	});
 })
 
-router.get('/api/v1/getenabled', (req, res) => {
+router.get('/getenabled', (req, res) => {
     var secret = req.cookies['secret'];
     var userid = req.cookies['userid'];
 
@@ -378,4 +333,4 @@ router.get('/api/v1/getenabled', (req, res) => {
 	});
 })
 
-module.exports = router;
+module.exports = api;
