@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Routes to public sites
 router.get('/', (req, res) => {
-	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/index.html'));
+	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/index/index.html'));
 });
 
 router.get('/me', (req, res) => {
@@ -19,7 +19,7 @@ router.get('/me', (req, res) => {
 			}
 
 			if (result) {
-				res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me.html'));
+				res.status(200).sendFile(path.resolve(__dirname + '/../frontend/me/index.html'));
 			} else {
 				res.redirect('/login');
 			}
@@ -35,7 +35,7 @@ router.get('/user', function (req, res) {
 			res.send('User not in Database');
 		} else {
 			if (obj.enabled) {
-				res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface.html'));
+				res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface/index.html'));
 				return;
 			}
 			res.send('Der User hat den Dienst deaktiviert!');
@@ -44,7 +44,7 @@ router.get('/user', function (req, res) {
 });
 
 router.get('/login', (req, res) => {
-	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login.html'));
+	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login/index.html'));
 });
 
 module.exports = router;

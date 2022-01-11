@@ -1,0 +1,75 @@
+/* CSS rules are kept repetitive so that you can get CSS rules for each button easily : */
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+
+*:focus {
+	outline: none;
+}
+
+body {
+	font-family: 'Source Code Pro', monospace;
+	margin: 0;
+	background-color: rgb(46, 46, 46);
+	color: aliceblue;
+}
+
+h1 {
+	text-align: center;
+}
+
+button {
+	font-family: 'Source Code Pro', monospace;
+	font-size: medium;
+	border: transparent;
+	border-radius: 3px;
+	color: #fff;
+	background: #651fff;
+	cursor: pointer;
+}
+
+button:active {
+	background: #b388ff;
+}
+
+.printable {
+	font-family: Arial, Helvetica, sans-serif;
+	display: none;
+}
+
+@media print {
+	.nonprintable {
+		display: none;
+	}
+	.printable {
+		display: block;
+	}
+}
+
+h2 {
+	text-align: center;
+}
+
+table {
+	margin: auto;
+	color: #651fff;
+}
+
+td {
+	padding: 20px;
+	color: aliceblue;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}
+
+.deactive {
+	background: #ff3232;
+}
+
+.active {
+	background: #651fff;
+}
