@@ -3,7 +3,7 @@
 ![Lines of code](https://img.shields.io/tokei/lines/github/philpinsdorf/ezpp)
 ![GitHub issues](https://img.shields.io/github/issues-raw/philpinsdorf/ezpp)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/philpinsdorf/ezpp)
-![Discord](https://img.shields.io/discord/705014603058380902?color=7289DA&label=discord)
+[![Discord](https://img.shields.io/discord/705014603058380902?color=7289DA&label=discord)](https://discord.gg/UCVyEmM)
 
 
 ## Infos
