@@ -1,7 +1,6 @@
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
 const randomString = require('../utils/randomString.js');
-const querystring = require('querystring');
 const request = require('request');
 const User = require('../modules/user.js');
 const base64 = require('base-64');
@@ -32,12 +31,7 @@ api.get('/login_callback', function (req, res) {
 
 	// Check for matching states
 	if (state === null || state !== storedState) {
-		res.redirect(
-			'/#' +
-				querystring.stringify({
-					error: 'state_mismatch',
-				})
-		);
+		res.redirect('/#' + encodeURIComponent('state_mismatch'));
 		return
 	}
 	res.clearCookie(stateKey);
@@ -106,91 +100,58 @@ api.get('/login_callback', function (req, res) {
 });
 
 api.get('/getTracksBySearch', (req, res) => {
-	var search_term = req.query.track;
+	var search_term = req.query.track,
+		limit = req.query.limit || 5;
 
-	var options = {
-		url: 'https://accounts.spotify.com/api/token',
-		headers: {
-			Authorization: b64token,
-		},
-		form: {
-			grant_type: 'client_credentials',
-		},
-		json: true,
-	};
+	spotifyApi.clientCredentialsGrant()
+	.then(function (data) {
+		spotifyApi.setAccessToken(data.body['access_token']);
 
-	// Make Post Request to get Auth Token
-	request.post(options, (error, response, body) => {
-		var access_token = body.access_token;
+		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
+		.then(function(data) {
+			var total_results = data.body.tracks.total;
+			
+			var ids = [];
+			for (var i = 0; i < total_results; i++) {
+				ids.push(data.body.tracks.items[i].id);
+			}
 
-		// If there is no Error Callback Spotify Api Access Token
-		if (!error && response.statusCode === 200) {
-			var options = {
-				url: 'https://api.spotify.com/v1/search?q=' + search_term + '&type=track&limit=10&market=DE',
-				headers: {
-					Authorization: 'Bearer ' + access_token,
-				},
-				json: true,
-			};
+			var importantData = [];
 
-			// Make Get Request and Use Auth Token to Search Song
-			request.get(options, (error, response, body) => {
-				if (!error && response.statusCode === 200) {
-					var max_tracks = body.tracks.total > 10 ? 10 : body.tracks.total;
+			for (var i = 0; i < total_results; i++) {
+				(function (cntr) {
+					spotifyApi.getTrack(ids[cntr], {market: 'DE'})
+					.then(function(data) {
+						// If there is no Error get Important Data from Song
+						var obj = {};
+						obj['name'] = data.body['name'];
+						obj['preview'] = data.body['preview_url'];
+						obj['image'] = data.body['album'].images[0].url;
+						var arts = '';
+						for (var a = 0; a < data.body['artists'].length; a++) {
+							if (arts.length) {
+								arts += ', ';
+							}
+							arts += body.artists[a].name;
+						}
+						obj['artists'] = arts;
+						obj['id'] = body.id;
 
-					var ids = [];
-					for (var i = 0; i < max_tracks; i++) {
-						ids.push(body.tracks.items[i].id);
-					}
+						importantData.push(obj);
 
-					var importantData = [];
-					for (var i = 0; i < max_tracks; i++) {
-						(function (cntr) {
-							var options = {
-								url: 'https://api.spotify.com/v1/tracks/' + ids[cntr] + '?market=DE',
-								headers: {
-									Authorization: 'Bearer ' + access_token,
-								},
-								json: true,
-							};
-
-							// Make Get Request
-							request.get(options, (error, response, body) => {
-								if (!error && response.statusCode === 200) {
-									// If there is no Error get Important Data from Song
-									var obj = {};
-									obj['name'] = body.name;
-									obj['preview'] = body.preview_url;
-									obj['image'] = body.album.images[0].url;
-									var arts = '';
-									for (var a = 0; a < body.artists.length; a++) {
-										if (arts.length) {
-											arts += ', ';
-										}
-										arts += body.artists[a].name;
-									}
-									obj['artists'] = arts;
-									obj['id'] = body.id;
-
-									importantData.push(obj);
-
-									if (importantData.length === max_tracks) {
-										res.send(importantData);
-									}
-								} else {
-									console.log('Getting Track Failed!');
-								}
-							});
-						})(i);
-					}
-				} else {
-					console.log('Getting Songs Failed!');
-				}
-			});
-		} else {
-			console.log('Authentication Failed!');
-		}
-	});
+						if (importantData.length === total_results) {
+							res.send(importantData);
+						}
+					})
+				})(i);
+			}
+		}, function(err) {
+			console.error('Song Search went wrong', err);
+		});
+	},
+	function(err) {
+		console.log('Something went wrong when retrieving an access token', err);
+	})
 });
 
 api.get('/addsong', (req, res) => {
