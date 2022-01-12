@@ -2,16 +2,14 @@ const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
 const randomString = require('../utils/randomString.js');
 const sanitize = require('mongo-sanitize');
-const request = require('request');
 const User = require('../modules/user.js');
-const base64 = require('base-64');
 
 const api = express.Router();
 
 var spotifyApi = new SpotifyWebApi({
-  clientId: '7c4553c111d241b7ba3f7038f77e2e87',
-  clientSecret: '5bbe8d46b303428b993a475250e31278',
-  redirectUri: 'https://ezpp.herokuapp.com/api/v1/login_callback'
+	clientId: '7c4553c111d241b7ba3f7038f77e2e87',
+	clientSecret: '5bbe8d46b303428b993a475250e31278',
+	redirectUri: 'https://ezpp.herokuapp.com/api/v1/login_callback',
 });
 
 var scope = ['user-read-private'];
@@ -34,112 +32,124 @@ api.get('/login_callback', function (req, res) {
 	// Check for matching states
 	if (state === null || state !== storedState) {
 		res.redirect('/#' + encodeURIComponent('state_mismatch'));
-		return
+		return;
 	}
 	res.clearCookie(stateKey);
 
 	// Retrieve an access token and a refresh token
-	spotifyApi.authorizationCodeGrant(code)
-	.then(function(data) {
-		var refresh_token = sanitize(data.body['refresh_token']);
-		spotifyApi.setRefreshToken(refresh_token);
-		spotifyApi.refreshAccessToken()
-		.then(function(data) {
-			spotifyApi.setAccessToken(data.body['access_token']);
-			spotifyApi.getMe()
-			.then(function(data) {
-				var id = sanitize(data.body['id']),
-					display_name = sanitize(data.body['display_name']),
-					secret = '';
+	spotifyApi.authorizationCodeGrant(code).then(
+		function (data) {
+			var refresh_token = sanitize(data.body['refresh_token']);
+			spotifyApi.setRefreshToken(refresh_token);
+			spotifyApi.refreshAccessToken().then(
+				function (data) {
+					spotifyApi.setAccessToken(data.body['access_token']);
+					spotifyApi
+						.getMe()
+						.then(
+							function (data) {
+								var id = sanitize(data.body['id']),
+									display_name = sanitize(data.body['display_name']),
+									secret = '';
 
-				User.findOne({ userid: id }, (err, result) => {
-					if (err) {
-						throw err;
-					}
+								User.findOne({ userid: id }, (err, result) => {
+									if (err) {
+										throw err;
+									}
 
-					if (!result) {
-						newUser = new User({
-							userid: id,
-							enabled: false,
-							secret: randomString.get(256),
-							refreshToken: refresh_token,
-							key: randomString.get(16),
-							displayname: display_name,
-						});
+									if (!result) {
+										newUser = new User({
+											userid: id,
+											enabled: false,
+											secret: randomString.get(256),
+											refreshToken: refresh_token,
+											key: randomString.get(16),
+											displayname: display_name,
+										});
 
-						newUser.save((err, user) => {
-							if (err) {
-								throw err;
+										newUser.save((err, user) => {
+											if (err) {
+												throw err;
+											}
+											secret = user.secret;
+											console.log('Registered User ' + user.displayname);
+										});
+									} else {
+										secret = result.secret;
+										console.log('Logged in User ' + result.displayname);
+									}
+
+									res.clearCookie('secret');
+									res.cookie('secret', secret);
+									res.clearCookie('userid');
+									res.cookie('userid', id);
+									res.redirect('/me');
+								});
+							},
+							function (err) {
+								console.log('Something went wrong!', err);
 							}
-							secret = user.secret;
-							console.log('Registered User ' + user.displayname);
+						)
+						.then(() => {
+							spotifyApi.resetRefreshToken();
+							spotifyApi.resetAccessToken();
 						});
-					} else {
-						secret = result.secret;
-						console.log('Logged in User ' + result.displayname);
-					}
-
-					res.clearCookie('secret');
-					res.cookie('secret', secret);
-					res.clearCookie('userid');
-					res.cookie('userid', id);
-					res.redirect('/me');
-				});
-			}, function(err) {
-				console.log('Something went wrong!', err);
-			}).then(() => {
-				spotifyApi.resetRefreshToken();
-				spotifyApi.resetAccessToken();
-			});
-			}, function(err) {
-				console.log('Something went wrong!', err);
-			});
+				},
+				function (err) {
+					console.log('Something went wrong!', err);
+				}
+			);
 		},
-		function(err) {
+		function (err) {
 			console.log('Could not refresh access token', err);
 		}
-	)
+	);
 });
 
 api.get('/getTracksBySearch', (req, res) => {
 	var search_term = req.query.track,
 		limit = req.query.limit || 5;
 
-	spotifyApi.clientCredentialsGrant()
-	.then(function (data) {
-		spotifyApi.setAccessToken(data.body['access_token']);
-		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
-		.then(function(data) {
-			var importantData = [];
+	spotifyApi.clientCredentialsGrant().then(
+		function (data) {
+			spotifyApi.setAccessToken(data.body['access_token']);
+			spotifyApi
+				.searchTracks(decodeURIComponent(search_term), { limit: limit, market: 'DE' })
+				.then(
+					function (data) {
+						var importantData = [];
 
-			for (var i = 0; i < limit; i++) {
-				// If there is no Error get Important Data from Song
-				var track = data.body['tracks']['items'][i];
+						for (var i = 0; i < limit; i++) {
+							// If there is no Error get Important Data from Song
+							var track = data.body['tracks']['items'][i];
 
-				importantData[i] = {}
-				importantData[i]['name'] = track['name'];
-				importantData[i]['preview'] = track['preview_url'];
-				importantData[i]['image'] = track['album']['images'][0]['url'];
-				var arts = '';
-				for (var a = 0; a < (track['artists']).length; a++) {
-					if (arts.length) {
-						arts += ', ';
+							importantData[i] = {};
+							importantData[i]['name'] = track['name'];
+							importantData[i]['preview'] = track['preview_url'];
+							importantData[i]['image'] = track['album']['images'][0]['url'];
+							var arts = '';
+							for (var a = 0; a < track['artists'].length; a++) {
+								if (arts.length) {
+									arts += ', ';
+								}
+								arts += track['artists'][a]['name'];
+							}
+							importantData[i]['artists'] = arts;
+							importantData[i]['id'] = track['id'];
+						}
+
+						res.send(importantData);
+					},
+					function (err) {
+						console.error('Song Search went wrong', err);
 					}
-					arts += track['artists'][a]['name'];
-				}
-				importantData[i]['artists'] = arts;
-				importantData[i]['id'] = track['id'];
-			}
-
-			res.send(importantData);
-		}, function(err) {
-			console.error('Song Search went wrong', err);
-		})
-		.then(spotifyApi.resetAccessToken());
-	},
-	function(err) {
-		console.log('Something went wrong when retrieving an access token', err);
-	})
+				)
+				.then(spotifyApi.resetAccessToken());
+		},
+		function (err) {
+			console.log('Something went wrong when retrieving an access token', err);
+		}
+	);
 });
 
 api.get('/addsong', (req, res) => {
@@ -148,26 +158,27 @@ api.get('/addsong', (req, res) => {
 	var key = req.query.key;
 
 	User.findOne({ userid: userid, key: key }, (err, result) => {
-		if(err){
+		if (err) {
 			throw err;
 		}
-
 
 		if (!result) {
 			console.log('Wrong Access Parameters');
 			return;
-		} 
+		}
 
 		spotifyApi.setRefreshToken(result.refreshToken);
-		spotifyApi.addToQueue(songid)
-		.then(function(data) {
-			if(data['statusCode'] === 204) {
-				res.send('Added Song!');
+		spotifyApi.addToQueue(songid).then(
+			function (data) {
+				if (data['statusCode'] === 204) {
+					res.send('Added Song!');
+				}
+				res.end();
+			},
+			function (err) {
+				console.error('Something went wrong!', err);
 			}
-			res.end();
-		}, function(err) {
-			console.error('Something went wrong!', err);
-		});
+		);
 		spotifyApi.removeRefreshToken();
 	});
 });
