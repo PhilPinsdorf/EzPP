@@ -103,6 +103,7 @@ api.get('/getTracksBySearch', (req, res) => {
 	var search_term = req.query.track,
 		limit = req.query.limit || 5;
 
+	spotifyApi.refreshAccessToken()
 	spotifyApi.clientCredentialsGrant()
 	.then(function (data) {
 		spotifyApi.setAccessToken(data.body['access_token']);
@@ -110,7 +111,7 @@ api.get('/getTracksBySearch', (req, res) => {
 		.then(function(data) {
 			var importantData = [];
 
-			for (var i = 0; i < total_results; i++) {
+			for (var i = 0; i < limit; i++) {
 				(function (cntr) {
 					// If there is no Error get Important Data from Song
 					var obj = {};
