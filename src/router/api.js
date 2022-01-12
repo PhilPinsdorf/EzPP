@@ -108,13 +108,13 @@ api.get('/getTracksBySearch', (req, res) => {
 		spotifyApi.setAccessToken(data.body['access_token']);
 		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
 		.then(function(data) {
-			var total_results = data.body['tracks']['total'],
-				importantData = [];
+			var importantData = [];
 
 			for (var i = 0; i < total_results; i++) {
 				(function (cntr) {
 					// If there is no Error get Important Data from Song
 					var obj = {};
+					console.log(cntr)
 					console.log(data.body['tracks']['items'][cntr]['name'])
 					obj['name'] = data.body['tracks']['items'][cntr]['name'];
 					obj['preview'] = data.body['tracks']['items'][cntr]['preview_url'];
@@ -131,7 +131,7 @@ api.get('/getTracksBySearch', (req, res) => {
 
 					importantData.push(obj);
 
-					if (importantData.length === total_results) {
+					if (importantData.length === limit) {
 						res.send(importantData);
 					}
 				})(i);
