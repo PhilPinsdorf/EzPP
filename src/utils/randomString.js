@@ -1,11 +1,9 @@
+const crypto = require('crypto')
+
 module.exports = {
 	get(length) {
-		var text = '';
-		var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-		for (var i = 0; i < length; i++) {
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-		return text;
+		crypto.randomBytes(length, function(err, buffer) {
+			return buffer.toString('hex');
+		});
 	},
 };
