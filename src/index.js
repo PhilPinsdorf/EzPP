@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const routing = require('./router/routing.js');
 const api = require('./router/api.js');
+const fileshare = require('./router/fileshare.js');
 
 const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.net/EzPP?retryWrites=true&w=majority';
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', routing);
 app.use('/api/v1/', api);
+app.use('/fileshare/', fileshare);
 
 //Database Connection and opening of Port
 mongoose
