@@ -33,7 +33,7 @@ router.get('/me', (req, res) => {
 router.get('/user', function (req, res) {
 	User.findOne({ userid: req.query.id, key: req.query.key }, (err, obj) => {
 		if (!obj) {
-			res.send('User not in Database');
+			res.send('Wrong Access Link');
 		} else {
 			if (obj.enabled) {
 				res.status(200).sendFile(path.resolve(__dirname + '/../frontend/searchinterface/index.html'));
