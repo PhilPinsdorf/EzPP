@@ -5,6 +5,7 @@ var fac = new FastAverageColor();
 //Html-Variables
 var searchButton = document.querySelector('#searchBtn');
 var text = document.querySelector('#trackName');
+var quantity = document.querySelector('.quantity');
 var div = document.querySelector('.searchresults');
 var container = document.querySelector('.resultcontainer');
 var template = document.querySelector('#template');
@@ -15,7 +16,7 @@ div.style.display = 'none';
 
 //Add Search Button Functionality
 searchButton.addEventListener('click', () => {
-	fetch(apiBaseUrl + 'getTracksBySearch?track=' + encodeURIComponent(text.value))
+	fetch(apiBaseUrl + 'getTracksBySearch?track=' + encodeURIComponent(text.value) + '&limit=' + encodeURIComponent(quantity))
 		.then((response) => response.json())
 		.then((data) => {
 			div.innerHTML = '';

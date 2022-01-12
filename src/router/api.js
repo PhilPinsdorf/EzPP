@@ -103,7 +103,6 @@ api.get('/getTracksBySearch', (req, res) => {
 	var search_term = req.query.track,
 		limit = req.query.limit || 5;
 
-	spotifyApi.refreshAccessToken()
 	spotifyApi.clientCredentialsGrant()
 	.then(function (data) {
 		spotifyApi.setAccessToken(data.body['access_token']);
@@ -114,21 +113,20 @@ api.get('/getTracksBySearch', (req, res) => {
 			for (var i = 0; i < limit; i++) {
 				(function (cntr) {
 					// If there is no Error get Important Data from Song
-					var obj = {};
-					console.log(cntr)
-					console.log(data.body['tracks']['items'][cntr]['name'])
-					obj['name'] = data.body['tracks']['items'][cntr]['name'];
-					obj['preview'] = data.body['tracks']['items'][cntr]['preview_url'];
-					obj['image'] = data.body['tracks']['items'][cntr]['album']['images'][0]['url'];
+					var obj = {},
+						track = data.body['tracks']['items'][cntr];
+					obj['name'] = ['name'];
+					obj['preview'] = track['preview_url'];
+					obj['image'] = track['album']['images'][0]['url'];
 					var arts = '';
-					for (var a = 0; a < (data.body['tracks']['items'][cntr]['artists']).length; a++) {
+					for (var a = 0; a < (track['artists']).length; a++) {
 						if (arts.length) {
 							arts += ', ';
 						}
-						arts += data.body['tracks']['items'][cntr]['artists'][a]['name'];
+						arts += track['artists'][a]['name'];
 					}
 					obj['artists'] = arts;
-					obj['id'] = data.body['tracks']['items'][cntr]['id'];
+					obj['id'] = track['id'];
 
 					importantData.push(obj);
 
@@ -140,7 +138,7 @@ api.get('/getTracksBySearch', (req, res) => {
 		}, function(err) {
 			console.error('Song Search went wrong', err);
 		})
-		.then(spotifyApi.refreshAccessToken());
+		.then(spotifyApi.resetAccessToken());
 	},
 	function(err) {
 		console.log('Something went wrong when retrieving an access token', err);
