@@ -1,17 +1,13 @@
 name: Code Scanner njsscan
-on: [push]
+on: [push, pull_request]
 jobs:
-  Explore-GitHub-Actions:
+  njsscan:
     runs-on: ubuntu-latest
     steps:
-      - name: Install njsscan tool
-        run: |
-          pip install njsscan
-      - name: Report njsscan version 
-        run: |
-          njsscan --version          
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Run SAST scanner
-        run: |
-          njsscan src
+      - name: nodejsscan scan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@master
+        with:
+          args: 'src'
