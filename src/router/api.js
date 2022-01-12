@@ -19,9 +19,10 @@ var stateKey = 'spotify_auth_state';
 
 //Routes to the api
 api.get('/login', function (req, res) {
-	var state = randomString.get(16);
-	res.cookie(stateKey, state);
-	res.redirect(spotifyApi.createAuthorizeURL(scope, state, false, 'code'));
+	randomString.get(16, (state) => {
+		res.cookie(stateKey, state);
+		res.redirect(spotifyApi.createAuthorizeURL(scope, state, false, 'code'));
+	});
 });
 
 api.get('/login_callback', function (req, res) {
