@@ -106,20 +106,10 @@ api.get('/getTracksBySearch', (req, res) => {
 	spotifyApi.clientCredentialsGrant()
 	.then(function (data) {
 		spotifyApi.setAccessToken(data.body['access_token']);
-
 		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
 		.then(function(data) {
-			var total_results = data.body['tracks']['total'];
-			
-			var ids = [];
-			for (var i = 0; i < total_results; i++) {
-				console.log(data.body['tracks']['items'])
-				console.log(data.body['tracks']['items'][i])
-				console.log(data.body['tracks']['items'][i]['id'])
-				ids.push(data.body['tracks']['items'][i]['id']);
-			}
-
-			var importantData = [];
+			var total_results = data.body['tracks']['total'],
+				importantData = [];
 
 			for (var i = 0; i < total_results; i++) {
 				(function (cntr) {
@@ -127,18 +117,18 @@ api.get('/getTracksBySearch', (req, res) => {
 					.then(function(data) {
 						// If there is no Error get Important Data from Song
 						var obj = {};
-						obj['name'] = data.body['name'];
-						obj['preview'] = data.body['preview_url'];
-						obj['image'] = data.body['album']['images'][0]['url'];
+						obj['name'] = data.body['tracks']['items'][i]['name'];
+						obj['preview'] = data.body['tracks']['items'][i]['preview_url'];
+						obj['image'] = data.body['tracks']['items'][i]['album']['images'][0]['url'];
 						var arts = '';
-						for (var a = 0; a < data.body['artists'].length; a++) {
+						for (var a = 0; a < (data.body['tracks']['items'][i]['artists']).length; a++) {
 							if (arts.length) {
 								arts += ', ';
 							}
-							arts += body.artists[a].name;
+							arts += data.body['tracks']['items'][i]['artists'][a]['name'];
 						}
 						obj['artists'] = arts;
-						obj['id'] = body.id;
+						obj['id'] = data.body['tracks']['items'][i]['id'];
 
 						importantData.push(obj);
 
@@ -150,7 +140,8 @@ api.get('/getTracksBySearch', (req, res) => {
 			}
 		}, function(err) {
 			console.error('Song Search went wrong', err);
-		});
+		})
+		.then(spotifyApi.refreshAccessToken());
 	},
 	function(err) {
 		console.log('Something went wrong when retrieving an access token', err);
