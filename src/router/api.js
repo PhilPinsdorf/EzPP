@@ -112,6 +112,7 @@ api.get('/getTracksBySearch', (req, res) => {
 			var total_results = data.body.tracks.total;
 			
 			var ids = [];
+			console.log(data.body)
 			for (var i = 0; i < total_results; i++) {
 				ids.push(data.body.tracks.items[i]['id']);
 			}
