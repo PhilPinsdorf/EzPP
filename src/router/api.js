@@ -19,7 +19,7 @@ var stateKey = 'spotify_auth_state';
 //Routes to the api
 api.get('/login', function (req, res) {
 	randomString.get(16, (state) => {
-		res.cookie(stateKey, state);
+		res.cookie(stateKey, state, {httpOnly: true, secure: true});
 		res.redirect(spotifyApi.createAuthorizeURL(scope, state, false, 'code'));
 	});
 });
@@ -80,9 +80,9 @@ api.get('/login_callback', function (req, res) {
 									}
 
 									res.clearCookie('secret');
-									res.cookie('secret', secret);
+									res.cookie('secret', secret, {httpOnly: true, secure: true});
 									res.clearCookie('userid');
-									res.cookie('userid', id);
+									res.cookie('userid', id, {httpOnly: true, secure: true});
 									res.redirect('/me');
 								});
 							},
