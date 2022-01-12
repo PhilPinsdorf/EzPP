@@ -109,12 +109,11 @@ api.get('/getTracksBySearch', (req, res) => {
 
 		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
 		.then(function(data) {
-			var total_results = data.body.tracks.total;
+			var total_results = data.body['tracks']['total'];
 			
 			var ids = [];
-			console.log(data.body['tracks']['items'][0]['id'])
 			for (var i = 0; i < total_results; i++) {
-				ids.push(data.body.tracks.items[i]['id']);
+				ids.push(data.body['tracks']['items'][i]['id']);
 			}
 
 			var importantData = [];
@@ -127,7 +126,7 @@ api.get('/getTracksBySearch', (req, res) => {
 						var obj = {};
 						obj['name'] = data.body['name'];
 						obj['preview'] = data.body['preview_url'];
-						obj['image'] = data.body['album'].images[0].url;
+						obj['image'] = data.body['album']['images'][0]['url'];
 						var arts = '';
 						for (var a = 0; a < data.body['artists'].length; a++) {
 							if (arts.length) {
