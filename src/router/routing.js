@@ -47,4 +47,14 @@ router.get('/login', (req, res) => {
 	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login/index.html'));
 });
 
+// make JS and CSS files accessible
+router.get(/\.(?:js$)|(?:css$)/, (req, res, next) => {
+	// make sure only files from the frontend get served
+	if (!req.url.includes('/..')) {
+		res.status(200).sendFile(path.resolve(__dirname + '/../frontend' + req.url.split('?')[0]));
+	} else {
+		next();
+	}
+});
+
 module.exports = router;
