@@ -52,7 +52,7 @@ router.get('/login', (req, res) => {
 router.get(/\.(?:js$)|(?:css$)/, (req, res, next) => {
 	// make sure only files from the frontend get served
 	if (!req.url.includes('/..')) {
-		res.status(200).sendFile(path.resolve(__dirname + '/../frontend' + req.url.split('?')[0]));
+		req.res.status(200).sendFile(path.resolve(__dirname + '/../frontend' + req.path));
 	} else {
 		next();
 	}
