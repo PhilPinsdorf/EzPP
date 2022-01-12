@@ -1,6 +1,7 @@
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
 const randomString = require('../utils/randomString.js');
+const sanitize = require('mongo-sanitize');
 const request = require('request');
 const User = require('../modules/user.js');
 const base64 = require('base-64');
