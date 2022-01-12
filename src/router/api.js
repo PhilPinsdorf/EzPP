@@ -105,21 +105,18 @@ api.get('/getTracksBySearch', (req, res) => {
 
 	spotifyApi.clientCredentialsGrant()
 	.then(function (data) {
-		console.log(0)
 		spotifyApi.setAccessToken(data.body['access_token']);
 		spotifyApi.searchTracks(decodeURIComponent(search_term), {limit: limit, market: 'DE'})
 		.then(function(data) {
-			console.log(1)
 			var importantData = [];
 
 			for (var i = 0; i < limit; i++) {
 				// If there is no Error get Important Data from Song
-				console.log(2)
-				var obj = {},
-					track = data.body['tracks']['items'][i];
-				obj['name'] = ['name'];
-				obj['preview'] = track['preview_url'];
-				obj['image'] = track['album']['images'][0]['url'];
+				var track = data.body['tracks']['items'][i];
+
+				importantData[i]['name'] = track['name'];
+				importantData[i]['preview'] = track['preview_url'];
+				importantData[i]['image'] = track['album']['images'][0]['url'];
 				var arts = '';
 				for (var a = 0; a < (track['artists']).length; a++) {
 					if (arts.length) {
@@ -127,13 +124,10 @@ api.get('/getTracksBySearch', (req, res) => {
 					}
 					arts += track['artists'][a]['name'];
 				}
-				obj['artists'] = arts;
-				obj['id'] = track['id'];
-
-				importantData.push(obj);
+				importantData[i]['artists'] = arts;
+				importantData[i]['id'] = track['id'];
 			}
 
-			console.log(3);
 			res.send(importantData);
 		}, function(err) {
 			console.error('Song Search went wrong', err);
