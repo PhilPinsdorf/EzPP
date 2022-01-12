@@ -116,7 +116,7 @@ api.get('/getTracksBySearch', (req, res) => {
 				// If there is no Error get Important Data from Song
 				console.log(2)
 				var obj = {},
-					track = data.body['tracks']['items'][cntr];
+					track = data.body['tracks']['items'][i];
 				obj['name'] = ['name'];
 				obj['preview'] = track['preview_url'];
 				obj['image'] = track['album']['images'][0]['url'];
