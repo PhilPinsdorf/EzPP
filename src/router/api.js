@@ -40,15 +40,15 @@ api.get('/login_callback', function (req, res) {
 	// Retrieve an access token and a refresh token
 	spotifyApi.authorizationCodeGrant(code)
 	.then(function(data) {
-		var refresh_token = data.body['refresh_token'];
+		var refresh_token = sanitize(data.body['refresh_token']);
 		spotifyApi.setRefreshToken(refresh_token);
 		spotifyApi.refreshAccessToken()
 		.then(function(data) {
 			spotifyApi.setAccessToken(data.body['access_token']);
 			spotifyApi.getMe()
 			.then(function(data) {
-				var id = data.body['id'],
-					display_name = data.body['display_name'],
+				var id = sanitize(data.body['id']),
+					display_name = sanitize(data.body['display_name']),
 					secret = '';
 
 				User.findOne({ userid: id }, (err, result) => {
