@@ -50,9 +50,8 @@ router.get('/login', (req, res) => {
 // make JS and CSS files accessible
 // TODO: check if the file exists before trying to send it
 router.get(/\.(?:js$)|(?:css$)/, (req, res, next) => {
-	// make sure only files from the frontend get served
-	if (!req.url.includes('/..')) {
-		req.res.status(200).sendFile(path.resolve(__dirname + '/../frontend' + req.path));
+	// make sure only existing files from the frontend get served
+	if (!req.path.includes('/..') && fs.existsSync(__dirname + '/../frontend' + req.path)) {
 	} else {
 		next();
 	}
