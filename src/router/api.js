@@ -153,9 +153,9 @@ api.get('/getTracksBySearch', (req, res) => {
 });
 
 api.get('/addsong', (req, res) => {
-	var userid = req.query.user;
-	var songid = req.query.song;
-	var key = req.query.key;
+	var userid = sanitize(req.query.user);
+	var songid = sanitize(req.query.song);
+	var key = sanitize(req.query.key);
 
 	User.findOne({ userid: userid, key: key }, (err, result) => {
 		if (err) {
