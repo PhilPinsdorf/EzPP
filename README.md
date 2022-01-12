@@ -25,6 +25,7 @@ https://ezpp.herokuapp.com/
 - spotify-web-api-node
 - crypto
 - mongo-sanitize
+- express-rate-limit
 - path
 - fs
 
