@@ -22,9 +22,11 @@ https://ezpp.herokuapp.com/
 ## Dependencies
 - express
 - mongoose
-- spotify-web-api
-- request
-- base-64
+- spotify-web-api-node
+- crypto
+- mongo-sanitize
+- path
+- fs
 
 ## Author
 <b>Phil Pinsdorf</b> aka. rexituz
