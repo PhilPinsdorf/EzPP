@@ -113,32 +113,28 @@ api.get('/getTracksBySearch', (req, res) => {
 			var importantData = [];
 
 			for (var i = 0; i < limit; i++) {
-				(function (cntr) {
-					// If there is no Error get Important Data from Song
-					console.log(2)
-					var obj = {},
-						track = data.body['tracks']['items'][cntr];
-					obj['name'] = ['name'];
-					obj['preview'] = track['preview_url'];
-					obj['image'] = track['album']['images'][0]['url'];
-					var arts = '';
-					for (var a = 0; a < (track['artists']).length; a++) {
-						if (arts.length) {
-							arts += ', ';
-						}
-						arts += track['artists'][a]['name'];
+				// If there is no Error get Important Data from Song
+				console.log(2)
+				var obj = {},
+					track = data.body['tracks']['items'][cntr];
+				obj['name'] = ['name'];
+				obj['preview'] = track['preview_url'];
+				obj['image'] = track['album']['images'][0]['url'];
+				var arts = '';
+				for (var a = 0; a < (track['artists']).length; a++) {
+					if (arts.length) {
+						arts += ', ';
 					}
-					obj['artists'] = arts;
-					obj['id'] = track['id'];
+					arts += track['artists'][a]['name'];
+				}
+				obj['artists'] = arts;
+				obj['id'] = track['id'];
 
-					importantData.push(obj);
-
-					if (importantData.length === limit) {
-						console.log(3)
-						res.send(importantData);
-					}
-				})(i);
+				importantData.push(obj);
 			}
+
+			console.log(3);
+			res.send(importantData);
 		}, function(err) {
 			console.error('Song Search went wrong', err);
 		})
