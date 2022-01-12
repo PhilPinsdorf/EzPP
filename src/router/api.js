@@ -113,29 +113,26 @@ api.get('/getTracksBySearch', (req, res) => {
 
 			for (var i = 0; i < total_results; i++) {
 				(function (cntr) {
-					spotifyApi.getTrack(ids[cntr], {market: 'DE'})
-					.then(function(data) {
-						// If there is no Error get Important Data from Song
-						var obj = {};
-						obj['name'] = data.body['tracks']['items'][i]['name'];
-						obj['preview'] = data.body['tracks']['items'][i]['preview_url'];
-						obj['image'] = data.body['tracks']['items'][i]['album']['images'][0]['url'];
-						var arts = '';
-						for (var a = 0; a < (data.body['tracks']['items'][i]['artists']).length; a++) {
-							if (arts.length) {
-								arts += ', ';
-							}
-							arts += data.body['tracks']['items'][i]['artists'][a]['name'];
+					// If there is no Error get Important Data from Song
+					var obj = {};
+					obj['name'] = data.body['tracks']['items'][cntr]['name'];
+					obj['preview'] = data.body['tracks']['items'][cntr]['preview_url'];
+					obj['image'] = data.body['tracks']['items'][cntr]['album']['images'][0]['url'];
+					var arts = '';
+					for (var a = 0; a < (data.body['tracks']['items'][cntr]['artists']).length; a++) {
+						if (arts.length) {
+							arts += ', ';
 						}
-						obj['artists'] = arts;
-						obj['id'] = data.body['tracks']['items'][i]['id'];
+						arts += data.body['tracks']['items'][cntr]['artists'][a]['name'];
+					}
+					obj['artists'] = arts;
+					obj['id'] = data.body['tracks']['items'][cntr]['id'];
 
-						importantData.push(obj);
+					importantData.push(obj);
 
-						if (importantData.length === total_results) {
-							res.send(importantData);
-						}
-					})
+					if (importantData.length === total_results) {
+						res.send(importantData);
+					}
 				})(i);
 			}
 		}, function(err) {
