@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const User = require('../modules/user.js');
 
 const router = express.Router();
@@ -45,6 +46,16 @@ router.get('/user', function (req, res) {
 
 router.get('/login', (req, res) => {
 	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login/index.html'));
+});
+
+// make JS and CSS files accessible
+router.get(/\.(?:js$)|(?:css$)/, (req, res, next) => {
+	// make sure only existing files from the frontend get served
+	if (!req.path.includes('/..') && fs.existsSync(__dirname + '/../frontend' + req.path)) {
+		res.status(200).sendFile(req.path, { root: __dirname + '/../frontend', lastModified: false });
+	} else {
+		res.status(404).sendFile(__dirname + '/../frontend/404/index.html');
+	}
 });
 
 module.exports = router;
