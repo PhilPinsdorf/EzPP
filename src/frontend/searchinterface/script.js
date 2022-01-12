@@ -16,7 +16,7 @@ div.style.display = 'none';
 
 //Add Search Button Functionality
 searchButton.addEventListener('click', () => {
-	fetch(apiBaseUrl + 'getTracksBySearch?track=' + encodeURIComponent(text.value) + '&limit=' + encodeURIComponent(quantity))
+	fetch(apiBaseUrl + 'getTracksBySearch?track=' + encodeURIComponent(text.value) + '&limit=' + encodeURIComponent(quantity.value))
 		.then((response) => response.json())
 		.then((data) => {
 			div.innerHTML = '';
