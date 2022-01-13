@@ -1,6 +1,7 @@
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
-const randomString = require('../utils/randomString.js');
+const randomString = require('../utils/random-key-util.js');
+const encryptionUtil = require('../utils/encryption-util.js');
 const sanitize = require('mongo-sanitize');
 const User = require('../modules/user.js');
 
@@ -14,7 +15,6 @@ var spotifyApi = new SpotifyWebApi({
 
 var scope = ['user-read-private'];
 var stateKey = 'spotify_auth_state';
-// var b64token = 'Basic ' + base64.encode(client_id + ':' + client_secret).toString();
 
 //Routes to the api
 api.get('/login', function (req, res) {
@@ -80,7 +80,7 @@ api.get('/login_callback', function (req, res) {
 									}
 
 									res.clearCookie('secret');
-									res.cookie('secret', secret, {httpOnly: true, secure: true});
+									res.cookie('secret', encryptionUtil.encrypt(secret), {httpOnly: true, secure: true});
 									res.clearCookie('userid');
 									res.cookie('userid', id, {httpOnly: true, secure: true});
 									res.redirect('/me');
