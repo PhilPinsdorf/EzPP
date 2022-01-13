@@ -58,14 +58,18 @@ api.get('/login_callback', function (req, res) {
 									}
 
 									if (!result) {
-										newUser = new User({
-											userid: id,
-											enabled: false,
-											secret: randomKeyUtil.get(256),
-											refreshToken: refresh_token,
-											key: randomKeyUtil.get(16),
-											displayname: display_name,
-										});
+										randomKeyUtil.get(256, (genSecret) => {
+											randomKeyUtil.get(16, (genKey) => {
+												newUser = new User({
+													userid: id,
+													enabled: false,
+													secret: genSecret,
+													refreshToken: refresh_token,
+													key: genKey,
+													displayname: display_name,
+												});
+											})
+										})
 
 										newUser.save((err, user) => {
 											if (err) {
@@ -231,18 +235,21 @@ api.get('/generate_key', (req, res) => {
 	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 	var userid = req.cookies['userid'];
 
-	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
-		if (obj) {
-			obj.key = randomKeyUtil.get(16);
-			obj.save(function (err) {
-				if (err) {
-					throw err;
-				}
-				res.send('Changed');
-			});
-		} else {
-			res.send('Invalid Secret');
-		}
+
+	randomKeyUtil.get(16, (key) => {
+		User.findOne({ secret: secret, userid: userid }, (err, obj) => {
+			if (obj) {
+				obj.key = key;
+				obj.save(function (err) {
+					if (err) {
+						throw err;
+					}
+					res.send('Changed');
+				});
+			} else {
+				res.send('Invalid Secret');
+			}
+		});
 	});
 });
 
