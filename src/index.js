@@ -7,7 +7,7 @@ const routing = require('./router/routing.js');
 const api = require('./router/api.js');
 const fileshare = require('./router/fileshare.js');
 
-const mongoDbUri = 'mongodb+srv://expressapp:C4xqzz4YCQkzF2L@ezpp.yyk9j.mongodb.net/EzPP?retryWrites=true&w=majority';
+const mongoDbUri = process.env.MONGO_DB_URI;
 
 //Express Instance
 const app = express();

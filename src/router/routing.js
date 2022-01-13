@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const User = require('../modules/user.js');
+const encryptionUtil = require('../utils/encryption-util.js');
 const sanitize = require('mongo-sanitize');
 
 const router = express.Router();
@@ -12,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/me', (req, res) => {
-	var secret = sanitize(req.cookies['secret']);
+	var secret = sanitize(encryptionUtil.decrypt(req.cookies['secret']));
 	var userid = sanitize(req.cookies['userid']);
 	if (secret != null && userid != null) {
 		User.findOne({ userid: userid, secret: secret }, (err, result) => {

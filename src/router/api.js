@@ -1,6 +1,6 @@
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
-const randomString = require('../utils/random-key-util.js');
+const randomKeyUtil = require('../utils/random-key-util.js');
 const encryptionUtil = require('../utils/encryption-util.js');
 const sanitize = require('mongo-sanitize');
 const User = require('../modules/user.js');
@@ -9,7 +9,7 @@ const api = express.Router();
 
 var spotifyApi = new SpotifyWebApi({
 	clientId: '7c4553c111d241b7ba3f7038f77e2e87',
-	clientSecret: '5bbe8d46b303428b993a475250e31278',
+	clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 	redirectUri: 'https://ezpp.herokuapp.com/api/v1/login_callback',
 });
 
@@ -18,7 +18,7 @@ var stateKey = 'spotify_auth_state';
 
 //Routes to the api
 api.get('/login', function (req, res) {
-	randomString.get(16, (state) => {
+	randomKeyUtil.get(16, (state) => {
 		res.cookie(stateKey, state, {httpOnly: true, secure: true});
 		res.redirect(spotifyApi.createAuthorizeURL(scope, state, false, 'code'));
 	});
@@ -61,9 +61,9 @@ api.get('/login_callback', function (req, res) {
 										newUser = new User({
 											userid: id,
 											enabled: false,
-											secret: randomString.get(256),
+											secret: randomKeyUtil.get(256),
 											refreshToken: refresh_token,
-											key: randomString.get(16),
+											key: randomKeyUtil.get(16),
 											displayname: display_name,
 										});
 
@@ -184,7 +184,7 @@ api.get('/addsong', (req, res) => {
 });
 
 api.get('/getlink', (req, res) => {
-	var secret = req.cookies['secret'];
+	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 
 	User.findOne({ secret: secret }, (err, obj) => {
 		if (obj) {
@@ -196,7 +196,7 @@ api.get('/getlink', (req, res) => {
 });
 
 api.get('/getname', (req, res) => {
-	var secret = req.cookies['secret'];
+	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
@@ -209,7 +209,7 @@ api.get('/getname', (req, res) => {
 });
 
 api.get('/setenabled', (req, res) => {
-	var secret = req.cookies['secret'];
+	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
@@ -228,12 +228,12 @@ api.get('/setenabled', (req, res) => {
 });
 
 api.get('/generate_key', (req, res) => {
-	var secret = req.cookies['secret'];
+	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
 		if (obj) {
-			obj.key = randomString.get(16);
+			obj.key = randomKeyUtil.get(16);
 			obj.save(function (err) {
 				if (err) {
 					throw err;
@@ -247,7 +247,7 @@ api.get('/generate_key', (req, res) => {
 });
 
 api.get('/getenabled', (req, res) => {
-	var secret = req.cookies['secret'];
+	var secret = encryptionUtil.decrypt(req.cookies['secret']);
 	var userid = req.cookies['userid'];
 
 	User.findOne({ secret: secret, userid: userid }, (err, obj) => {
