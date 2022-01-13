@@ -68,16 +68,16 @@ api.get('/login_callback', function (req, res) {
 													key: genKey,
 													displayname: display_name,
 												});
+
+												newUser.save((err, user) => {
+													if (err) {
+														throw err;
+													}
+													secret = user.secret;
+													console.log('Registered User ' + user.displayname);
+												});
 											})
 										})
-
-										newUser.save((err, user) => {
-											if (err) {
-												throw err;
-											}
-											secret = user.secret;
-											console.log('Registered User ' + user.displayname);
-										});
 									} else {
 										secret = result.secret;
 										console.log('Logged in User ' + result.displayname);
