@@ -24,6 +24,7 @@
 		"querystring": "^0.2.1",
 		"request": "^2.88.2",
 		"serve-favicon": "^2.5.0",
-		"spotify-web-api-node": "^5.0.2"
+		"spotify-web-api-node": "^5.0.2",
+		"sanitize-filename": "^1.6.3"
 	}
 }
