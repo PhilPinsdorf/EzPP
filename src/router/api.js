@@ -174,7 +174,7 @@ api.get('/addsong', (req, res) => {
 		spotifyApi.setRefreshToken(result.refreshToken);
 		spotifyApi.refreshAccessToken().then(function (data) {
 			spotifyApi.setAccessToken(data.body['access_token']);
-			spotifyApi.addToQueue(songid).then(function (data) {
+			spotifyApi.addToQueue('spotify:track:' + songid).then(function (data) {
 				if (data['statusCode'] === 204) {
 					res.send('Added Song!');
 				}
@@ -188,7 +188,7 @@ api.get('/addsong', (req, res) => {
 			})
 		},
 		function (err) {
-			console.error('refreshing Access Token failed!', err);
+			console.error('Refreshing Access Token failed!', err);
 		}
 		)
 	});
