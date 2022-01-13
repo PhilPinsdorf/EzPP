@@ -173,6 +173,11 @@ api.get('/addsong', (req, res) => {
 
 		spotifyApi.setRefreshToken(result.refreshToken);
 		spotifyApi.refreshAccessToken();
+
+		console.log(spotifyApi.getRefreshToken())
+		console.log(spotifyApi.getAccessToken())
+		console.log(spotifyApi.getCredentials())
+
 		spotifyApi.addToQueue(songid).then(
 			function (data) {
 				if (data['statusCode'] === 204) {
