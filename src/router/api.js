@@ -119,6 +119,9 @@ api.get('/getTracksBySearch', (req, res) => {
 					function (data) {
 						var importantData = [];
 
+						console.log(data.body['tracks']['items'][0]);
+						console.log(process.env.SPOTIFY_CLIENT_SECRET);
+
 						for (var i = 0; i < limit; i++) {
 							// If there is no Error get Important Data from Song
 							var track = data.body['tracks']['items'][i];
