@@ -6,14 +6,7 @@ const User = require('../modules/user.js');
 const fileshare = express.Router();
 
 fileshare.get('/:type/:site/:name', (req, res) => {
-	var file =
-		__dirname +
-		'/../frontend/' +
-		req.params.site.toLowerCase() +
-		'/' +
-		req.params.name.toLowerCase() +
-		'.' +
-		req.params.type.toLowerCase();
+	var file = __dirname + '/../frontend/' + req.params.site + '/' + req.params.name + '.' + req.params.type;
 	console.log(file);
 
 	if (!fs.existsSync(file)) {
