@@ -172,6 +172,7 @@ api.get('/addsong', (req, res) => {
 		}
 
 		spotifyApi.setRefreshToken(result.refreshToken);
+		spotifyApi.refreshAccessToken();
 		spotifyApi.addToQueue(songid).then(
 			function (data) {
 				if (data['statusCode'] === 204) {
@@ -182,8 +183,10 @@ api.get('/addsong', (req, res) => {
 			function (err) {
 				console.error('Something went wrong!', err);
 			}
-		);
-		spotifyApi.resetRefreshToken();
+		).then(() => {
+			spotifyApi.resetRefreshToken();
+			spotifyApi.resetAccessToken();
+		})
 	});
 });
 
