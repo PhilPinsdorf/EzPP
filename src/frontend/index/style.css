@@ -1,19 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 * {
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
+	font-family: 'Lato', monospace;
 }
 
 html {
 	background-color: rgb(46, 46, 46);
 }
 
-.item1 {
+.head {
 	grid-area: 1 1 1 1;
-	border: 1px solid red;
+	background-color: #651fff;
+	color: white;
+	text-align: center;
 }
+
+.head > h1 {
+	margin: 0;
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 .item2 {
 	grid-area: 2 1 2 1;
 	border: 1px solid red;
