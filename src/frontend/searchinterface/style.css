@@ -193,19 +193,17 @@ body {
 /*-----------------------------------------------------------------*/
 
 .search {
-	width: 100%;
+	width: 100vw;
+	height: 40px;
 	position: relative;
 	display: flex;
 	--sColor: #651fff;
-	margin-bottom: 50px;
+	margin: 10px;
 }
 
 .searchTerm {
 	width: 100%;
 	border: 3px solid var(--sColor);
-	border-right: none;
-	padding: 5px;
-	height: 20px;
 	border-radius: 5px 0 0 5px;
 	outline: none;
 	color: #9dbfaf;
@@ -217,8 +215,7 @@ body {
 
 .searchButton {
 	width: 40px;
-	height: 36px;
-	border: 1px solid var(--sColor);
+	border: 3px solid var(--sColor);
 	background: var(--sColor);
 	text-align: center;
 	color: #fff;
@@ -248,6 +245,7 @@ body {
 	grid-row-start: 2;
 	grid-column-end: 2;
 	grid-row-end: 3;
+	width: 100vw;
 }
 
 .quantitywrapper {
@@ -255,6 +253,7 @@ body {
 	grid-row-start: 2;
 	grid-column-end: 3;
 	grid-row-end: 3;
+	width: 100vw;
 }
 
 .resultcontainer {
@@ -265,7 +264,43 @@ body {
 }
 
 .quantitywrapper input {
-	width: 286px;
 	height: 36px;
 	border: 3px solid #651fff;
+}
+
+.volumecontrol {
+	-webkit-appearance: none;
+	width: 100vw;
+	height: 2px;
+	border-radius: 5px;
+	background: rgba(255, 255, 255, 0.314);
+	outline: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+.volumecontrol::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: white;
+	cursor: pointer;
+	transition: all 0.15s ease-in-out;
+}
+.volumecontrol::-webkit-slider-thumb:hover {
+	background: #d4d4d4;
+	transform: scale(1.2);
+}
+.volumecontrol::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border: 0;
+	border-radius: 50%;
+	background: white;
+	cursor: pointer;
+	transition: background 0.15s ease-in-out;
+}
+.volumecontrol::-moz-range-thumb:hover {
+	background: #d4d4d4;
 }

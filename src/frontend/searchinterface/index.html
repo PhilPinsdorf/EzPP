@@ -6,12 +6,17 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Ez Party Playlist</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-		<link rel="stylesheet" href="/fileshare/css/searchinterface/style" />
+		<link rel="stylesheet" href="http://127.0.0.1:5500/src/frontend/searchinterface/style.css" />
 		<script src="https://unpkg.com/fast-average-color/dist/index.min.js"></script>
-		<script src="/fileshare/js/searchinterface/script" defer></script>
+		<script src="http://127.0.0.1:5500/src/frontend/searchinterface/script.js" defer></script>
 	</head>
 	<body>
 		<div class="wrap">
+			<!-- Head -->
+			<div class="head">
+				<h1>EzPP</h1>
+			</div>
+
 			<!-- Searchbar -->
 			<div class="search">
 				<input type="text" class="searchTerm" id="trackName" placeholder="Suchen..." />
@@ -21,7 +26,7 @@
 			</div>
 
 			<!-- Search Parameters-->
-			<div class="volumewrapper">
+			<div class="vomewrapper">
 				<input type="range" class="volumecontrol" />
 			</div>
 			<div class="quantitywrapper">
