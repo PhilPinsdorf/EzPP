@@ -44,7 +44,7 @@ html {
 .grid-container {
 	display: grid;
 	grid-template-columns: 100%;
-	grid-template-rows: 7% 70% 20% 3%;
+	grid-template-rows: 8% 92% 92%;
 	width: 100vw;
 	height: 100vh;
 }
