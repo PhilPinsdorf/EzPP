@@ -111,8 +111,12 @@ searchButton.addEventListener('click', () => {
 });
 
 // Audio Volume Slider
-var volume = document.querySelector('.volumecontrol');
-audioplayer.volume = volume.value / 100;
-volume.addEventListener('input', function (e) {
-	audioplayer.volume = e.currentTarget.value / 100;
+$("#volume").slider({
+  	min: 0,
+  	max: 100,
+  	value: 30,
+		range: "min",
+  	slide: function(event, ui) {
+    	audioplayer.volume = ui.value / 100;
+  	}
 });

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 body {
 	background-color: rgb(46, 46, 46);
@@ -7,36 +7,33 @@ body {
 }
 
 .resultbox {
-	height: 150px;
-	width: 500px;
+	height: calc((20vw - (50px / 3)) + ((20vw - (50px / 3)) / 2));
+	width: calc(100vw - 50px);
 	display: grid;
-	grid-template-columns: 100px 300px 100px;
-	grid-template-rows: 100px 50px;
-	border: 1px solid transparent;
+	grid-template-columns: calc(20vw - (50px / 3)) calc(60vw - (50px / 3)) calc(20vw - (50px / 3));
+	grid-template-rows: calc(20vw - (50px / 3)) calc((30vw - 50px) - (20vw - (50px / 3)));
 	border-radius: 7px;
 	overflow: hidden;
-	margin-right: 20px;
+	margin-bottom: 7px;
 }
 
 .resultcontainer {
-	padding: 20px;
+	padding: 5px;
+	margin: 10px;
+	margin-top: 15px;
 	background-color: rgb(26, 26, 26);
 	width: auto;
 	height: auto;
 	display: none;
-	border: 1px solid transparent;
-	border-radius: 20px;
+	border: 10px solid transparent;
+	border-radius: 10px;
 	overflow: hidden;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
 .searchresults {
-	width: auto;
-	height: 700px;
-	overflow-y: scroll;
-	overflow-x: hidden;
 	display: inline-block;
-	scrollbar-width: thin;
-	scrollbar-color: #651fff rgb(15, 15, 15);
 }
 
 .cover {
@@ -47,40 +44,49 @@ body {
 }
 
 .cover img {
-	width: 100px;
-	height: 100px;
+	width: calc(20vw - (50px / 3));
+	height: calc(20vw - (50px / 3));
 }
 
 .infobg,
 .infotext {
+	position: relative;
 	grid-column-start: 2;
 	grid-row-start: 1;
 	grid-column-end: 3;
 	grid-row-end: 2;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	text-align: start;
-}
-
-.infobg img {
-	width: 300px;
-	height: 300px;
-	/*filter: blur(8px);
-  -webkit-filter: blur(8px);*/
+	width: calc(60vw - (50px / 3));
+	height: calc(20vw - (50px / 3));
 }
 
 .infotext {
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Lato', sans-serif;
 	filter: none;
 }
 
 .infotext h3 {
 	font-weight: bold;
+	font-size: 4vw;
+	margin-top: 1vw;
+	margin-left: 1vw;
+	margin-bottom: 0;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: calc(59vw - (50px / 3));
 }
 
 .infotext h4 {
 	font-weight: lighter;
+	font-size: 3vw;
+	margin-top: 1vw;
+	margin-left: 1vw;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: calc(59vw - (50px / 3));
 }
 
 .playbutton {
@@ -106,11 +112,11 @@ body {
 }
 
 .addbutton button {
-	width: 100px;
-	height: 150px;
+	width: calc(20vw - (50px / 3));
+	height: calc((20vw - (50px / 3)) + ((20vw - (50px / 3)) / 2));
 	--color: white;
 	--hover: #b388ff;
-	--height: 100px;
+	--height: calc(30vw - (50px / 3));
 	border: 3px solid #651fff;
 	border-radius: 0px 7px 7px 0px;
 	color: #651fff;
@@ -136,11 +142,11 @@ body {
 }
 
 .playbutton button {
-	width: 400px;
-	height: 50px;
+	width: calc((60vw - (50px / 3)) + (20vw - (50px / 3)));
+	height: calc((20vw - (50px / 3)) / 2);
 	--color: #651fff;
 	--hover: #6200ea;
-	--height: 50px;
+	--height: 8vw;
 	border: 3px solid white;
 	border-radius: 0px 0px 0px 7px;
 	color: white;
@@ -193,12 +199,10 @@ body {
 /*-----------------------------------------------------------------*/
 
 .search {
-	width: 100vw;
 	height: 40px;
 	position: relative;
 	display: flex;
 	--sColor: #651fff;
-	margin: 10px;
 }
 
 .searchTerm {
@@ -207,10 +211,9 @@ body {
 	border-radius: 5px 0 0 5px;
 	outline: none;
 	color: #9dbfaf;
-}
-
-.searchTerm:focus {
+	font-family: 'Lato', sans-serif;
 	color: var(--sColor);
+	padding-left: 10px;
 }
 
 .searchButton {
@@ -226,11 +229,10 @@ body {
 
 /*Resize the wrap to see the search bar change!*/
 .wrap {
-	width: 572px;
 	margin: 0 auto;
 	display: grid;
-	grid-template-columns: 286px 286px;
-	grid-template-rows: 36px 36px 720px;
+	grid-template-columns: 75vw 25vw;
+	grid-template-rows: 46px 46px calc(100vh - 2 * 46px);
 }
 
 .search {
@@ -238,6 +240,7 @@ body {
 	grid-row-start: 1;
 	grid-column-end: 3;
 	grid-row-end: 2;
+	margin: 10px 10px 0px 10px;
 }
 
 .volumewrapper {
@@ -245,7 +248,14 @@ body {
 	grid-row-start: 2;
 	grid-column-end: 2;
 	grid-row-end: 3;
-	width: 100vw;
+	margin: 10px 5px 0px 10px;
+
+	display: flex; /* establish flex container */
+	flex-direction: row; /* default value; can be omitted */
+	flex-wrap: nowrap; /* default value; can be omitted */
+	justify-content: space-between;
+
+	padding: 0 20px 0 20px;
 }
 
 .quantitywrapper {
@@ -253,7 +263,18 @@ body {
 	grid-row-start: 2;
 	grid-column-end: 3;
 	grid-row-end: 3;
-	width: 100vw;
+	margin: 10px 10px 0px 5px;
+	position: relative;
+}
+
+.volumewrapper i {
+	position: relative;
+	color: #651fff;
+	height: fit-content;
+	width: fit-content;
+
+	top: 50%;
+	transform: translate(0%, -50%);
 }
 
 .resultcontainer {
@@ -264,43 +285,41 @@ body {
 }
 
 .quantitywrapper input {
-	height: 36px;
 	border: 3px solid #651fff;
+	border-radius: 5px;
+	height: 28px;
+	width: calc(25vw - 26px);
+	font-family: 'Lato', sans-serif;
+	color: #651fff;
 }
 
-.volumecontrol {
-	-webkit-appearance: none;
-	width: 100vw;
-	height: 2px;
-	border-radius: 5px;
-	background: rgba(255, 255, 255, 0.314);
+#volume {
+	position: relative;
+	height: 5px;
+	width: 70%;
+	background: #555;
+	border-radius: 15px;
+
+	top: 50%;
+	transform: translate(0%, -50%);
+}
+#volume .ui-slider-range-min {
+	height: 5px;
+	width: 90%;
+	position: absolute;
+	background: #651fff;
+	border: none;
+	border-radius: 10px;
 	outline: none;
-	padding: 0;
-	margin: 0;
-	cursor: pointer;
 }
-.volumecontrol::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	width: 20px;
+#volume .ui-slider-handle {
+	width: 5px;
 	height: 20px;
-	border-radius: 50%;
-	background: white;
+	border-radius: 20px;
+	background: #fff;
+	position: absolute;
+	margin-left: -2px;
+	margin-top: -8px;
 	cursor: pointer;
-	transition: all 0.15s ease-in-out;
-}
-.volumecontrol::-webkit-slider-thumb:hover {
-	background: #d4d4d4;
-	transform: scale(1.2);
-}
-.volumecontrol::-moz-range-thumb {
-	width: 20px;
-	height: 20px;
-	border: 0;
-	border-radius: 50%;
-	background: white;
-	cursor: pointer;
-	transition: background 0.15s ease-in-out;
-}
-.volumecontrol::-moz-range-thumb:hover {
-	background: #d4d4d4;
+	outline: none;
 }
