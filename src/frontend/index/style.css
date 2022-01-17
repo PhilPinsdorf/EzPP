@@ -70,9 +70,8 @@ button {
 	color: white;
 	background-color: var(--colorMain);
 	border: none;
-	border-radius: 5px;
-	width: 70vw;
-	height: auto;
+	border-radius: 20px;
+	padding: 1%;
 	font-size: 5vw;
 }
 
