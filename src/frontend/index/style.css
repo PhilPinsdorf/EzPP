@@ -3,7 +3,8 @@
 body {
 	margin: 0;
 	font-family: 'Lato', sans-serif;
-	color: white;
+	font-size: large;
+	color: whitesmoke;
 	background: #202731;
 	--colorMain: #651fff;
 	--colorPink: #f900bc;
@@ -19,7 +20,7 @@ body {
 	text-align: center;
 	background: #651fff;
 	font-style: italic;
-	font-size: larger;
+	font-size: xx-large;
 	margin: 0;
 }
 
@@ -34,11 +35,18 @@ section {
 	align-items: center;
 	min-height: fit-content;
 	padding: 100px 7vw 50px 7vw;
-	text-align: justify;
 }
 
 ol {
 	padding-left: 1vw;
+}
+
+p {
+	text-align: center;
+}
+
+li > p {
+	text-align: justify;
 }
 
 a {
@@ -70,9 +78,8 @@ button {
 	color: white;
 	background-color: var(--colorMain);
 	border: none;
-	border-radius: 5px;
-	width: 70vw;
-	height: auto;
+	border-radius: 20px;
+	padding: 1%;
 	font-size: 5vw;
 }
 
