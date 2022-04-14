@@ -13,11 +13,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/me', (req, res) => {
-	var unsanitizedSecret = encryptionUtil.decrypt(req.cookies['secret']);
+	var unsanitizedSecret = req.cookies['secret'];
 	var unsanitizedUserid = req.cookies['userid'];
-	
+
 	try {
-		var secret = sanitize(unsanitizedSecret);
+		var secret = sanitize(encryptionUtil.decrypt(unsanitizedSecret));
 		var userid = sanitize(unsanitizedUserid);
 
 		User.findOne({ userid: userid, secret: secret }, (err, result) => {
