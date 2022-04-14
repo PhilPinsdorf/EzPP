@@ -19,6 +19,11 @@ searchButton.addEventListener('click', () => {
 	fetch(apiBaseUrl + 'getTracksBySearch?track=' + encodeURIComponent(text.value) + '&limit=' + encodeURIComponent(quantity.value))
 		.then((response) => response.json())
 		.then((data) => {
+			if(data.length == 0){
+				console.log(true)
+			}
+
+
 			div.innerHTML = '';
 			div.style.display = 'inline-block';
 			container.style.display = 'inline-block';

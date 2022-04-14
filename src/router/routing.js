@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 router.get('/me', (req, res) => {
 	var secret = sanitize(encryptionUtil.decrypt(req.cookies['secret']));
 	var userid = sanitize(req.cookies['userid']);
-	if (secret != null && userid != null) {
+	try {
 		User.findOne({ userid: userid, secret: secret }, (err, result) => {
 			if (err) {
 				throw err;
@@ -27,8 +27,9 @@ router.get('/me', (req, res) => {
 				res.redirect('/login');
 			}
 		});
-	} else {
-		res.redirect('/login');
+	}		
+	catch {
+		res.redirect('/api/v1/login');
 	}
 });
 
