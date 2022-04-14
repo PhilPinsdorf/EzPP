@@ -13,9 +13,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/me', (req, res) => {
-	var secret = sanitize(encryptionUtil.decrypt(req.cookies['secret']));
-	var userid = sanitize(req.cookies['userid']);
+	var unsanitizedSecret = encryptionUtil.decrypt(req.cookies['secret']);
+	var unsanitizedUserid = req.cookies['userid'];
+	
 	try {
+		var secret = sanitize(unsanitizedSecret);
+		var userid = sanitize(unsanitizedUserid);
+
 		User.findOne({ userid: userid, secret: secret }, (err, result) => {
 			if (err) {
 				throw err;
@@ -29,7 +33,7 @@ router.get('/me', (req, res) => {
 		});
 	}		
 	catch {
-		res.redirect('/api/v1/login');
+		res.redirect('/login');
 	}
 });
 
