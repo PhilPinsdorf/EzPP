@@ -51,6 +51,7 @@ api.get('/login_callback', function (req, res) {
 						.getMe()
 						.then(
 							function (data) {
+								console.log(data);
 								var id = sanitize(data.body['id']),
 									display_name = sanitize(data.body['display_name']),
 									secret = '';
