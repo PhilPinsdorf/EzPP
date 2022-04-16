@@ -39,75 +39,72 @@ api.get('/login_callback', function (req, res) {
 	// Retrieve an access token and a refresh token
 	spotifyApi.authorizationCodeGrant(code).then(
 		function (data) {
-			console.log(data);
 			var refresh_token = sanitize(data.body['refresh_token']);
 			spotifyApi.setRefreshToken(refresh_token);
 			spotifyApi.refreshAccessToken().then(
 				function (data) {
-					console.log(data);
 					spotifyApi.setAccessToken(data.body['access_token']);
 
-					// Check if user should have access to the app
-					try {
-						spotifyApi.getMe().then(
-								function (data) {
-									console.log(data);
-									var id = sanitize(data.body['id']),
-									display_name = sanitize(data.body['display_name']),
-									secret = '';
+					spotifyApi.getMe().then(
+							function (data) {
+								console.log(data);
+								var id = sanitize(data.body['id']),
+								display_name = sanitize(data.body['display_name']),
+								secret = '';
 
-									User.findOne({ userid: id }, (err, result) => {
-										if (err) {
-											throw err;
-										}
+								User.findOne({ userid: id }, (err, result) => {
+									if (err) {
+										throw err;
+									}
 
-										if (!result) {
-											randomKeyUtil.get(256, (genSecret) => {
-												randomKeyUtil.get(16, (genKey) => {
-													newUser = new User({
-														userid: id,
-														enabled: false,
-														secret: genSecret,
-														refreshToken: refresh_token,
-														key: genKey,
-														displayname: display_name,
-													});
+									if (!result) {
+										randomKeyUtil.get(256, (genSecret) => {
+											randomKeyUtil.get(16, (genKey) => {
+												newUser = new User({
+													userid: id,
+													enabled: false,
+													secret: genSecret,
+													refreshToken: refresh_token,
+													key: genKey,
+													displayname: display_name,
+												});
 
-													newUser.save((err, user) => {
-														if (err) {
-															throw err;
-														}
-														secret = user.secret;
-														console.log('Registered User ' + user.displayname);
-													});
-												})
+												newUser.save((err, user) => {
+													if (err) {
+														throw err;
+													}
+													secret = user.secret;
+													console.log('Registered User ' + user.displayname);
+												});
 											})
-										} else {
-											secret = result.secret;
-											console.log('Logged in User ' + result.displayname);
-										}
+										})
+									} else {
+										secret = result.secret;
+										console.log('Logged in User ' + result.displayname);
+									}
 
-										res.clearCookie('secret');
-										res.cookie('secret', encryptionUtil.encrypt(secret), {httpOnly: true, secure: true});
-										res.clearCookie('userid');
-										res.cookie('userid', id, {httpOnly: true, secure: true});
-										res.redirect('/me');
-									});
-								},
-								function (err) {
-									console.log('Something went wrong!', err);
-								}
-							)
-						.then(() => {
-							spotifyApi.resetRefreshToken();
-							spotifyApi.resetAccessToken();
-						});
-					}
-					catch {
+									res.clearCookie('secret');
+									res.cookie('secret', encryptionUtil.encrypt(secret), {httpOnly: true, secure: true});
+									res.clearCookie('userid');
+									res.cookie('userid', id, {httpOnly: true, secure: true});
+									res.redirect('/me');
+								});
+							},
+							function (err) {
+								console.log('Something went wrong!', err);
+							}
+						)
+					.then(() => {
+						spotifyApi.resetRefreshToken();
+						spotifyApi.resetAccessToken();
+					})
+					.catch((error) => {
+						// Check if user should have access to the app
 						console.log("Wrong Status Code");
 						var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
 						res.redirect("/error?text=" + encodeURIComponent(message));
-					}	
+					});
+
 				},
 				function (err) {
 					console.log('Something went wrong!', err);
