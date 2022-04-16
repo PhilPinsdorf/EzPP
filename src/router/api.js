@@ -47,7 +47,16 @@ api.get('/login_callback', function (req, res) {
 
 					spotifyApi.getMe().then(
 							function (data) {
-								console.log(data);
+								console.log(data.statusCode);
+
+								if(data.statusCode != 200) {
+									// Check if user should have access to the app
+									console.log("Wrong Status Code");
+									var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
+									res.redirect("/error?text=" + encodeURIComponent(message));
+									return;
+								}
+
 								var id = sanitize(data.body['id']),
 								display_name = sanitize(data.body['display_name']),
 								secret = '';
@@ -98,13 +107,6 @@ api.get('/login_callback', function (req, res) {
 						spotifyApi.resetRefreshToken();
 						spotifyApi.resetAccessToken();
 					})
-					.catch((error) => {
-						// Check if user should have access to the app
-						console.log("Wrong Status Code");
-						var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
-						res.redirect("/error?text=" + encodeURIComponent(message));
-					});
-
 				},
 				function (err) {
 					console.log('Something went wrong!', err);
