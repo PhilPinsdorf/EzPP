@@ -53,6 +53,7 @@ api.get('/login_callback', function (req, res) {
 								// Check if user should have access to the app
 								if(data.statusCode != 200){
 									// Not on Allow List
+									console.log("Wrong Status Code");
 									var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
 									res.redirect("/error?text=" + encodeURIComponent(message));
 									return;
