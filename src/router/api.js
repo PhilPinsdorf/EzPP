@@ -46,12 +46,11 @@ api.get('/login_callback', function (req, res) {
 				function (data) {
 					console.log(data);
 					spotifyApi.setAccessToken(data.body['access_token']);
-					spotifyApi
-						.getMe()
-						.then(
-							function (data) {
-								// Check if user should have access to the app
-								try {
+
+					// Check if user should have access to the app
+					try {
+						spotifyApi.getMe().then(
+								function (data) {
 									console.log(data);
 									var id = sanitize(data.body['id']),
 									display_name = sanitize(data.body['display_name']),
@@ -94,21 +93,21 @@ api.get('/login_callback', function (req, res) {
 										res.cookie('userid', id, {httpOnly: true, secure: true});
 										res.redirect('/me');
 									});
+								},
+								function (err) {
+									console.log('Something went wrong!', err);
 								}
-								catch {
-									console.log("Wrong Status Code");
-									var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
-									res.redirect("/error?text=" + encodeURIComponent(message));
-								}
-							},
-							function (err) {
-								console.log('Something went wrong!', err);
-							}
-						)
+							)
 						.then(() => {
 							spotifyApi.resetRefreshToken();
 							spotifyApi.resetAccessToken();
 						});
+					}
+					catch {
+						console.log("Wrong Status Code");
+						var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
+						res.redirect("/error?text=" + encodeURIComponent(message));
+					}	
 				},
 				function (err) {
 					console.log('Something went wrong!', err);
