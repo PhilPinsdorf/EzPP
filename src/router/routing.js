@@ -57,4 +57,8 @@ router.get('/login', (req, res) => {
 	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/login/index.html'));
 });
 
+router.get('/error', (req, res) => {
+	res.status(200).sendFile(path.resolve(__dirname + '/../frontend/error/index.html'));
+});
+
 module.exports = router;

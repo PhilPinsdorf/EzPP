@@ -40,7 +40,6 @@ api.get('/login_callback', function (req, res) {
 	spotifyApi.authorizationCodeGrant(code).then(
 		function (data) {
 			console.log(data);
-
 			var refresh_token = sanitize(data.body['refresh_token']);
 			spotifyApi.setRefreshToken(refresh_token);
 			spotifyApi.refreshAccessToken().then(
@@ -51,6 +50,14 @@ api.get('/login_callback', function (req, res) {
 						.getMe()
 						.then(
 							function (data) {
+								// Check if user should have access to the app
+								if(data.statusCode != 200){
+									// Not on Allow List
+									var message = "Your Name is probably not on the allowlist of this App. If you think this is an Error, reach out to the Admin of this site!";
+									res.redirect("/error?text=" + encodeURIComponent(message));
+									return;
+								}
+
 								console.log(data);
 								var id = sanitize(data.body['id']),
 									display_name = sanitize(data.body['display_name']),
