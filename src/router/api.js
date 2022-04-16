@@ -39,10 +39,13 @@ api.get('/login_callback', function (req, res) {
 	// Retrieve an access token and a refresh token
 	spotifyApi.authorizationCodeGrant(code).then(
 		function (data) {
+			console.log(data);
+
 			var refresh_token = sanitize(data.body['refresh_token']);
 			spotifyApi.setRefreshToken(refresh_token);
 			spotifyApi.refreshAccessToken().then(
 				function (data) {
+					console.log(data);
 					spotifyApi.setAccessToken(data.body['access_token']);
 					spotifyApi
 						.getMe()
