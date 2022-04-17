@@ -44,9 +44,11 @@ api.get('/login_callback', function (req, res) {
 			spotifyApi.refreshAccessToken().then(
 				function (data) {
 					spotifyApi.setAccessToken(data.body['access_token']);
-
+					console.log("HYPER HYPER!!!!");
 					spotifyApi.getMe().then(
 							function (data) {
+								console.log("HYPER HYPER!!!! DIE ZWEITE");
+
 								console.log(data.statusCode);
 
 								if(data.statusCode != 200) {
